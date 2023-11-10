@@ -1,0 +1,30 @@
+C
+3
+C
+3
+Documents
+2
+TextFiles
+0
+0
+Downloads
+0
+0
+2
+newfile.txt
+md
+This is the content of file1.
+Line 2
+Line 3
+file2.txt
+txt
+This is another file.
+Content goes here.
+More lines.
+Pictures
+0
+0
+Music
+0
+0
+0
