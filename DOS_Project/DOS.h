@@ -9,7 +9,7 @@ struct dir { //folder
 
 	dir* parent;
 	list<dir*>childern; // subFolders
-	vector<file*>files;
+	list<file*>files;
 
 	list<dir*> getChildern() {
 		return childern;
@@ -46,7 +46,7 @@ public:
 
 	dir* root; // main C: folder
 	dir* curr;
-	vector<string> fileNames; // Contains the name of all Files, so when inserting check for uniqueness
+	list<string> fileNames; // Contains the name of all Files, so when inserting check for uniqueness
 	string Version;
 	string Credits;
 
@@ -82,69 +82,69 @@ public:
 				istringstream iss(input);
 				iss >> command >> argument[0] >> argument[1] >> argument[2];
 				std::for_each(command.begin(), command.end(), [](char& ch) {
-					ch = std::tolower(ch); });
+					ch = std::toupper(ch); });
 			}
 
 
-			if (command == "cd") {
+			if (command == "CD") {
 				changeDirectory(argument[0]);
 			}
-			else if (command == "cd.") {
+			else if (command == "CD.") {
 				printWorkingDirectoy();
 			}
-			else if (command == "cd..") {
+			else if (command == "CD..") {
 				previousDirectory();
 			}
-			else if (command == "cd//") {
+			else if (command == "CD//") {
 				changeDirectory_root();
 			}
-			else if (command == "convert") {
+			else if (command == "CONVERT") {
 				convert(argument[0], argument[1]);
 			}
-			else if (command == "delete") {
+			else if (command == "DELETE") {
 				Delete(root, argument[0]);
 			}
-			else if (command == "dir") {
+			else if (command == "DIR") {
 				displayDIR(root);
 			}
-			else if (command == "exit") {
+			else if (command == "EXIT") {
 				Exit();
 			}
-			else if (command == "find") {
+			else if (command == "FIND") {
 				FIND(argument[0]);
 			}
-			else if (command == "findf") {
+			else if (command == "FINDF") {
 				FINDF(argument[0],argument[1]);
 			}
-			else if (command == "findstr") {
+			else if (command == "FINDSTR") {
 				FINDSTR(curr, argument[0]);
 			}
-			else if (command == "format") {
+			else if (command == "FORMAT") {
 				format();
 			}
-			else if (command == "loadtree") {
+			else if (command == "LOADTREE") {
 				loadTree();
 			}
-			else if (command == "save") {
+			else if (command == "SAVE") {
 				SAVE();
 			}
-			else if (command == "mkdir") {
+			else if (command == "MKDIR") {
 				makeDirectory(argument[0]);
 			}
-			else if (command == "pwd") {
+			else if (command == "PWD") {
 				printWorkingDirectory();
 				cout << endl;
 			}
-			else if (command == "rename") {
+			else if (command == "RENAME") {
 				rename(argument[0], argument[1]);
 			}
-			else if (command == "ver") {
+			else if (command == "VER") {
 				version();
 			}
-			else if (command == "attrib") {
+			else if (command == "ATTRIB") {
 				attribute(curr);
 			}
-			else if (command == "cls") {
+			else if (command == "CLS") {
 				clearScreen();
 			}
 			
