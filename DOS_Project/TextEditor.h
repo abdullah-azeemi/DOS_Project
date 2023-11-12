@@ -193,6 +193,26 @@ public:
 						}
 					}
 				}
+				else if (currButtonPressed == 83)//delete
+				{
+					if (cursorCol != lineNumber->size())
+					{
+						saveState(undo);
+						
+						if (cursorCol == 0)
+						{
+							(*lineNumber).erase(lineNumber->begin());//delete only character
+							cursorCol = 0;
+							displayLine(*lineNumber);
+						}
+						else
+						{
+							auto dummy = currLetter;
+							lineNumber->erase(++dummy);
+							displayLine(*lineNumber);
+						}
+					}
+				}
 			}
 			else if (currButtonPressed == 8)//Backspace
 			{
