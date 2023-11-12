@@ -1,6 +1,6 @@
 #pragma once
 #include"Utility.h"
-
+#include"TextEditor.h"
 struct file;
 struct dir { //folder
 
@@ -49,6 +49,7 @@ class DOS {
 
 	string command;
 	string txtName;
+	textEditor editor;
 	priority_queue<file*, vector<file*>, CompareFiles> priorityPrintQ;
 	queue<file*> printQ;
 
@@ -249,10 +250,9 @@ public:
 
 	
 public:
-	DOS() {
+	DOS():editor(){
 		root = new dir{ "C", getTimeDate(), nullptr,{},{}};
 		curr = root;
-
 		Version = "DOS -Shell [Version 1.0.1 - Batman & Mouvli]";
 		Credits = "(c) ITU corporation . All rights reserved";
 		command = " ";
