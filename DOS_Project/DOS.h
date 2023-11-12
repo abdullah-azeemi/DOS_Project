@@ -150,6 +150,7 @@ class DOS {
 		dir* currentDir = new dir();
 		currentDir->parent = parentDir;
 		getline(inputFile, currentDir->dirName);
+		getline(inputFile, currentDir->creationTime);
 		int numSubfolders;
 		inputFile >> numSubfolders;
 		inputFile.ignore();
@@ -175,6 +176,7 @@ class DOS {
 		newFile->parent = parentDir;
 
 		getline(inputFile, newFile->txtName); // for file Name
+		getline(inputFile, newFile->creationTime);
 		getline(inputFile, newFile->extension); // for file Extensions
 
 		string line;
@@ -185,7 +187,7 @@ class DOS {
 	}
 	void saveDirectory(ofstream& wrt, dir* currentDir) {
 		wrt << currentDir->dirName << endl;
-
+		wrt << currentDir->creationTime << endl;
 		wrt << currentDir->getChildern().size() << endl;
 		for (dir* subDir : currentDir->getChildern()) {
 			saveDirectory(wrt, subDir);
@@ -197,6 +199,7 @@ class DOS {
 	}
 	void saveFile(ofstream& wrt, file* currentFile) {
 		wrt << currentFile->txtName << endl;
+		wrt << currentFile->creationTime << endl;
 		wrt << currentFile->extension << endl;
 		for (const string& line : currentFile->content) {
 			wrt << line << endl;
