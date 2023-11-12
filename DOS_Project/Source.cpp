@@ -13,7 +13,7 @@ int mains() {
     dos.makeDirectory("TextFiles");
 
     // Create a file with content
-    file* sampleFile = new file{ "file1.txt", time(nullptr), {"This is the content of file1.", "Line 2", "Line 3"}, "txt", dos.curr };
+    file* sampleFile = new file{ "file1.txt", getTimeDate(), {"This is the content of file1.", "Line 2", "Line 3"}, "txt", dos.curr};
     dos.getCurr()->files.push_back(sampleFile);
     dos.fileNames.push_back("file1.txt");
 
@@ -25,7 +25,7 @@ int mains() {
     dos.makeDirectory("Downloads");
 
     // Create another file with content
-    file* anotherFile = new file{ "file2.txt", time(nullptr), {"This is another file.", "Content goes here.", "More lines."}, "txt", dos.curr };
+    file* anotherFile = new file{ "file2.txt", getTimeDate(), {"This is another file.", "Content goes here.", "More lines."}, "txt", dos.curr};
     dos.curr->files.push_back(anotherFile);
     dos.fileNames.push_back("file2.txt");
 

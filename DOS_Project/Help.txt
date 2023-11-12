@@ -1,0 +1,34 @@
+32
+C:\>help
+ATTRIB		Displays file (name provided as input) attributes.
+CD		Displays the name of or changes the current directory.
+CD.		Prints working directory 
+CD..		Change directory to previous directory
+CD\		Changes directory to root directory 
+CONVERT	    Asks two types and converts extension of all files of one type to another type.
+COPY	    Copies one file in the current directory to another location (directory).
+CREATE	    Creates a file with the name provided and allows the user to enter contents of the file.
+DEL		Delete a file whose name is provided in input.
+DIR		Displays a list of files and subdirectories in a directory.
+EDIT	    Opens a file (loads into a linked list) and allows the user to edit
+EXIT		Quits the program
+FIND           	Searches for a file in your current virtual directory whose name is provided as input.
+FINDF	Searches for a text string in the currently open file or the file whose name is provided as input.
+FINDSTR        	Searches for strings in all files of your current virtual directory
+FORMAT	Formats the current virtual directory 
+HELP		Provides Help information for all these commands.
+LOADTREE	Load a given tree in your tree structure. Given tree is in a file named tree.txt		
+MKDIR		Creates a virtual directory.
+MOVE	Moves one file from one directory to another               directory.
+PPRINT	Adds a text file to the priority based print queue, and displays the current priority queue. 
+PROMPT	Changes the Windows command prompt
+PRINT		Adds a text file to the print queue, and displays the current queue. 
+PQUEUE	Shows current state of the priority based print queue, with time left for each element
+PWD		Prints working directory
+QUEUE		Shows current state of the print queue, with time left for each element
+RENAME	Renames a file whose current and new name is provided as input.
+RMDIR	Removes a directory along with its contents. Consider setting the respective sibling links 
+SAVE		Saves the currently open file to disk.
+TREE		Displays the complete directory structure.
+VER		Displays the version of your program.
+
