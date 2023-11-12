@@ -53,7 +53,3 @@ int mains() {
 
     return 0;
 }
-int main() {
-    DOS d;
-    d.run();
-}
