@@ -44,17 +44,27 @@ class textEditor
 
 		textState newState(dQ.back());
 		dQ.pop_back();
-
-		//clearing memory before making copy
-		for (auto itr =paragraph.begin();itr!= paragraph.end(); itr++)
-		{
-			itr->clear();
-		}
-		paragraph.clear();
+		
+		this->deleteParagraph();
 
 		paragraph = newState.savePara;
 		cursorCol = newState.cursorC;
 		cursorRow = newState.cursorR;
+		lineNumber = paragraph.begin();
+		advance(lineNumber, cursorRow);
+		currLetter = lineNumber->begin();
+		if(lineNumber->size()!=0)
+			advance(currLetter, cursorCol-1);
+	}
+
+	void deleteParagraph()
+	{
+		//clearing memory before making copy
+		for (auto itr = paragraph.begin(); itr != paragraph.end(); itr++)
+		{
+			itr->clear();
+		}
+		paragraph.clear();
 	}
 
 	//graphicalHelpers
@@ -98,7 +108,7 @@ class textEditor
 	}
 
 
-	//splicing helpers
+	//splicing helpers courtesy of stack overflow
 	void swapLine(list<list<char>>::iterator& line1, list<list<char>>::iterator& line2)
 	{
 		auto dummy = (*line1);
@@ -113,6 +123,26 @@ class textEditor
 		receiver.splice(receiver.begin(), sender, itr, sender.end());
 	}
 
+	void emptyRedoQueue()
+	{
+		redo.clear();
+	}
+
+	void saveFile(string fileName)
+	{
+		fileName += ".txt";
+		ofstream writeBack(fileName);
+		for (auto rItr = paragraph.begin(); rItr != paragraph.end(); rItr++)
+		{
+			for (auto cItr = (*rItr).begin(); cItr != (*rItr).end(); cItr++)
+			{
+				writeBack << (*cItr);
+			}
+			writeBack << endl;
+		}
+		this->deleteParagraph();
+	}
+
 public:
 	
 	textEditor() :paragraph({ list<char>() }), cursorRow(0), cursorCol(0)
@@ -120,9 +150,12 @@ public:
 		lineNumber = paragraph.begin();
 	}
 
-	void editFile()
+	void editFile(string fileName)
 	{
 
+		//set color to white
+		system("color f0");
+		system("cls");
 		int currButtonPressed;
 
 
@@ -198,7 +231,7 @@ public:
 					if (cursorCol != lineNumber->size())
 					{
 						saveState(undo);
-						
+						emptyRedoQueue();
 						if (cursorCol == 0)
 						{
 							(*lineNumber).erase(lineNumber->begin());//delete only character
@@ -219,6 +252,7 @@ public:
 				if (cursorCol == 0 && cursorRow == 0)
 					continue;
 
+				emptyRedoQueue();
 				saveState(undo);
 
 				if (cursorRow > 0 && cursorCol == 0)//move one line back
@@ -257,6 +291,7 @@ public:
 			else if (currButtonPressed == 13)//enter
 			{
 				saveState(undo);
+				emptyRedoQueue();
 				/*
 				if (cursorRow == paragraph.size() - 1)
 				{
@@ -304,8 +339,33 @@ public:
 					displayParagraph();
 				}
 			}
+			else if (currButtonPressed == 26)//CTRL+Z UNDO
+			{
+				saveState(redo);
+				system("cls");
+				loadState(undo);
+				displayParagraph();
+			}
+			else if (currButtonPressed == 25)//CTRL+Y REDO
+			{
+				if (redo.empty())
+					continue;
+				saveState(undo);
+				system("cls");
+				loadState(redo);
+				displayParagraph();
+			}
+			else if (currButtonPressed == 27)//Escape close editor and save file
+			{
+				system("cls");
+				system("color 0f");
+				saveFile(fileName);
+				break;
+			}
 			else//data entry
 			{
+				emptyRedoQueue();
+				saveState(undo);
 				if (lineNumber->empty() || (cursorCol==0 && lineNumber->size()!=0))//insert at front
 				{
 					lineNumber->push_front(currButtonPressed);//automatically converts to ascii to char
