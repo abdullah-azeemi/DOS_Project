@@ -1,5 +1,6 @@
 #include "Utility.h"
 #include"DOS.h"
+#include"TextEditor.h"
 
 int mains() {
     DOS dos;
@@ -52,4 +53,20 @@ int mains() {
     dos.Exit();  // This should save the changes and exit
 
     return 0;
+
+}
+
+int mains1()
+{
+    DOS d;
+    d.run();
+
+    return 0;
+}
+
+
+int main()//editor
+{
+    textEditor t;
+    t.editFile();
 }
