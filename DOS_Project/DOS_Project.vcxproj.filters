@@ -32,5 +32,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Text.txt" />
+    <Text Include="Help.txt" />
   </ItemGroup>
 </Project>

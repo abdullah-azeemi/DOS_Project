@@ -14,6 +14,9 @@
 #include<ranges>
 #include<iterator>
 #include<filesystem>
+#include<queue>
+
+#define _CRT_SECURE_NO_WARNINGS // suppresing for ctime warning
 
 
 using namespace std;
@@ -52,4 +55,14 @@ static void displayHeader(string Version, string Credits) {
 	cout << Version;
 	gotoRowCol(1, 25);
 	cout << Credits;
+}
+static string getTimeDate() {
+	std::time_t now = std::time(nullptr);
+	string ss;
+	std::tm localTimeStruct;
+	localtime_s(&localTimeStruct, &now);
+	char buffer[80];
+	std::strftime(buffer, sizeof(buffer), "%I:%M %p %m/%d/%Y", &localTimeStruct);
+	ss += buffer;
+	return ss;
 }
