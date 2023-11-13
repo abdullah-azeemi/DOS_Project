@@ -320,7 +320,7 @@ public:
 				FINDSTR(curr, argument[0]);
 			}
 			else if (command == "FORMAT") {
-				format();
+				format(root);
 			}
 			else if (command == "LOADTREE") {
 				loadTree();
@@ -490,10 +490,19 @@ public:
 		}
 	}
 	// Command : FORMAT
-	void format() {
+	void format(dir * root) {
 		cout << "\n\n Formating ..... " << endl;
-		root->childern.clear();
-		fileNames.clear();
+		for (dir* subDir : root->childern) {
+			format(subDir);
+			delete subDir; 
+		}
+		root->childern.clear(); 
+
+		// Delete files
+		for (file* f : root->files) {
+			delete f;  
+		}
+		root->files.clear();  
 		clearScreen();
 	}
 
@@ -752,7 +761,8 @@ public:
 	
 	// Command : HELP
 	void HELP() {
-		format();
+		//format(root);
+		clearScreen();
 		fstream rdr("Help.txt");
 		int size; string line;
 		rdr >> size;
