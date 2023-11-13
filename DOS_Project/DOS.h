@@ -348,7 +348,7 @@ public:
 				clearScreen();
 			}
 			else if (command == "COPY") {
-				Copy(argument[0]);
+				Copy(argument[0],argument[1]);
 			}
 			else if (command == "CREATE") {
 				create(argument[0]);
@@ -602,11 +602,16 @@ public:
 		gotoRowCol(5, 0);
 	}
 	// Command : COPY
-	void Copy(string fName) {
+	void Copy(string fName, string newFname) {
 		auto fileIter = find_if(curr->files.begin(), curr->files.end(),
 			[fName](file* f) { return f->getName()  == fName; });
 
 		if (fileIter != curr->files.end()) {
+			file* sourceFileObj1 = *fileIter;
+			ofstream newFile(newFname);
+			for (const auto& line : sourceFileObj1->content) {
+				newFile << line << endl;
+			}
 			file* sourceFileObj = *fileIter;
 			file* copyFile = new file{ *sourceFileObj };
 			copyFile->parent = curr;
