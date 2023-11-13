@@ -81,6 +81,7 @@ class DOS {
 			[txtName](file* f) { return f->txtName == txtName; });
 		if (fileIter != currentDir->files.end()) {
 			cout << "Deleted file: " << txtName << " in " << currentDir->dirName << endl;
+			delete(*fileIter);
 			currentDir->files.erase(fileIter);
 			return;
 		}
@@ -432,6 +433,9 @@ public:
 		dir* temp = root;
 		deleteFileHelper(temp, txtName);
 		fileNames.erase(remove(fileNames.begin(), fileNames.end(), txtName), fileNames.end());
+		string format = txtName;
+		format += ".txt";
+		std::remove(format.c_str());
 	}
 	// Command : DIR
 	void displayDIR(dir*root) {
@@ -614,27 +618,6 @@ public:
 			cout << "Source file not  found : " << fName << endl;
 		}
 	}
-	// Command : CREATE
-	/*
-	void create(string fName, string createFname) {
-		ifstream rdr(createFname);
-		auto fileIter = find_if(curr->files.begin(), curr->files.end(),
-			[fName](file* f) { return f->getName() == fName; });
-
-		if (fileIter == curr->files.end()) {
-			file* newFile = new file{ fName, getTimeDate(), {}, "", curr};
-			string line;
-			while (getline(rdr, line)) {
-				newFile->content.push_back(line);
-			}
-			curr->files.push_back(newFile);
-			cout << "File created: " << curr->dirName << "\\" << fName << endl;
-		}
-		else {
-			cout << "File already exists: " << curr->dirName << "\\" << fName << endl;
-		}
-	}
-	*/
 	void create(string fName) {
 		auto fileIter = find_if(curr->files.begin(), curr->files.end(),
 			[fName](file* f) { return f->getName() == fName; });
@@ -666,7 +649,7 @@ public:
 			[fName](file* f) { return f->getName() == fName; });
 
 		if (fileIter != curr->files.end()) {
-			//file* newFile = new file{ fName, getTimeDate(), {}, "", curr };
+			(*fileIter)->creationTime = getTimeDate();
 			editor.editFile(fName,true);
 			string format = fName;
 			format += ".txt";
