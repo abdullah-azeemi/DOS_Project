@@ -562,6 +562,12 @@ public:
 			cout << "File renamed... " << endl;
 			fileNames.erase(remove(fileNames.begin(), fileNames.end(), txtName), fileNames.end());
 			fileNames.push_back(newName);
+			//rename file
+			string format1 = fileNamee;
+			format1 += ".txt";
+			string format2 = newName;
+			format2 += ".txt";
+			std::rename(format1.c_str(), format2.c_str());
 		}
 		else {
 			cout << "File not found: " << txtName << endl;
