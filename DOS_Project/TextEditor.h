@@ -65,6 +65,10 @@ class textEditor
 			itr->clear();
 		}
 		paragraph.clear();
+		paragraph.push_back(list<char>());
+		cursorRow = 0;
+		cursorCol = 0;
+		lineNumber = paragraph.begin();
 	}
 
 	//graphicalHelpers
@@ -108,13 +112,7 @@ class textEditor
 	}
 
 
-	//splicing helpers courtesy of stack overflow
-	void swapLine(list<list<char>>::iterator& line1, list<list<char>>::iterator& line2)
-	{
-		auto dummy = (*line1);
-		(*line1) = (*line2);
-		(*line2) = dummy;
-	}
+	//splicing helper,sets iterator accordingly
 
 	void spliceHelper(list<char>& sender, list<char>& receiver,const int& combineAt)
 	{
@@ -143,6 +141,37 @@ class textEditor
 		this->deleteParagraph();
 	}
 
+	void loadFile(string fileName)
+	{
+		string format = fileName;
+		format += ".txt";
+		bool isFirst = true;
+		ifstream reader(format);
+		string line = "";
+		while (getline(reader, line))
+		{
+			if (isFirst == false)
+			{
+				paragraph.push_back(list<char>());
+				lineNumber++;
+			}
+			else
+				isFirst = false;
+			for (int i = 0; i < line.size(); i++)
+			{
+				lineNumber->push_back(line[i]);
+			}
+			line.clear();
+		}
+		currLetter = lineNumber->begin();
+		cursorRow = paragraph.size()-1;
+		cursorCol = lineNumber->size();
+		if(cursorCol!=0)//boundary check as advance also decrements
+			advance(currLetter, cursorCol-1);
+		displayParagraph();
+		gotoRowCol(cursorRow, cursorCol);
+	}
+
 public:
 	
 	textEditor() :paragraph({ list<char>() }), cursorRow(0), cursorCol(0)
@@ -156,6 +185,10 @@ public:
 		//set color to white
 		system("color f0");
 		system("cls");
+		if (load)
+		{
+			loadFile(fileName);
+		}
 		int currButtonPressed;
 
 
@@ -329,7 +362,9 @@ public:
 					paragraph.insert(lineNumber, list<char>());//iinsert in between
 					cursorRow++;
 					dummy--;
-					swapLine(lineNumber, dummy);
+					auto temp = (*lineNumber);
+					(*lineNumber) = (*dummy);
+					(*dummy) = temp;
 					if (cursorCol != dummy->size())
 					{
 						spliceHelper((*dummy), (*lineNumber), cursorCol);

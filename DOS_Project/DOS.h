@@ -352,6 +352,9 @@ public:
 			else if (command == "CREATE") {
 				create(argument[0]);
 			}
+			else if (command == "EDIT") {
+				edit(argument[0]);
+			}
 			else if (command == "MOVE") {
 				move(argument[0], argument[1]);
 			}
@@ -650,6 +653,33 @@ public:
 			cout << "File already exists: " << curr->dirName << "\\" << fName << endl;
 		}
 	}
+
+	//Command::EDIT
+	void edit(string fName) {
+		auto fileIter = find_if(curr->files.begin(), curr->files.end(),
+			[fName](file* f) { return f->getName() == fName; });
+
+		if (fileIter != curr->files.end()) {
+			//file* newFile = new file{ fName, getTimeDate(), {}, "", curr };
+			editor.editFile(fName,true);
+			string format = fName;
+			format += ".txt";
+			ifstream reader(format);
+			while (reader)
+			{
+				string dummy = "";
+				getline(reader, dummy);
+				(*fileIter)->content.clear();
+				(*fileIter)->content.push_back(dummy);
+				dummy.clear();
+			}
+			cout << "File Edited: " << curr->dirName << "\\" << fName << endl;
+		}
+		else {
+			cout << "Such File Does Not exists: " << curr->dirName << "\\" << fName << endl;
+		}
+	}
+
 
 	// Command : MOVE
 	void move(string fName, string destinationDirectory) {

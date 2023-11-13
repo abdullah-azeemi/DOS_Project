@@ -69,6 +69,6 @@ int main()
 int main()//editor
 {
     textEditor t;
-    t.editFile("testingfile1");
+    t.editFile("testingfile1",true);
 }
 */
