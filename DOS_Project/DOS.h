@@ -497,7 +497,12 @@ public:
 			delete subDir; 
 		}
 		root->childern.clear(); 
-
+		for (const auto& fileName : fileNames) {
+			string format = fileName;
+			format += ".txt";
+			std::remove(format.c_str());
+		}
+		fileNames.clear();
 		// Delete files
 		for (file* f : root->files) {
 			delete f;  
@@ -632,6 +637,7 @@ public:
 			cout << "Source file not  found : " << fName << endl;
 		}
 	}
+	// Command : CREATE
 	void create(string fName) {
 		auto fileIter = find_if(curr->files.begin(), curr->files.end(),
 			[fName](file* f) { return f->getName() == fName; });
@@ -639,6 +645,8 @@ public:
 		if (fileIter == curr->files.end()) {
 			file* newFile = new file{ fName, getTimeDate(), {}, "", curr };
 			editor.editFile(fName);
+			displayHeader(Version, Credits);
+			cout << endl;
 			string format = fName;
 			format += ".txt";
 			ifstream reader(format);
@@ -650,6 +658,7 @@ public:
 				dummy.clear();
 			}
 			curr->files.push_back(newFile);
+			fileNames.push_back(fName);
 			cout << "File created: " << curr->dirName << "\\" << fName << endl;
 		}
 		else {
