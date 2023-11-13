@@ -56,7 +56,7 @@ int mains() {
 
 }
 
-int mains1()
+int main()
 {
     DOS d;
     d.run();
@@ -65,8 +65,10 @@ int mains1()
 }
 
 
+/*
 int main()//editor
 {
     textEditor t;
     t.editFile("testingfile1");
 }
+*/

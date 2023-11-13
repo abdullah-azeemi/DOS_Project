@@ -150,7 +150,7 @@ public:
 		lineNumber = paragraph.begin();
 	}
 
-	void editFile(string fileName)
+	void editFile(string fileName,bool load=false)
 	{
 
 		//set color to white

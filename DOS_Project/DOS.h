@@ -350,7 +350,7 @@ public:
 				Copy(argument[0]);
 			}
 			else if (command == "CREATE") {
-				create(argument[0], argument[1]);
+				create(argument[0]);
 			}
 			else if (command == "MOVE") {
 				move(argument[0], argument[1]);
@@ -606,6 +606,7 @@ public:
 		}
 	}
 	// Command : CREATE
+	/*
 	void create(string fName, string createFname) {
 		ifstream rdr(createFname);
 		auto fileIter = find_if(curr->files.begin(), curr->files.end(),
@@ -616,6 +617,31 @@ public:
 			string line;
 			while (getline(rdr, line)) {
 				newFile->content.push_back(line);
+			}
+			curr->files.push_back(newFile);
+			cout << "File created: " << curr->dirName << "\\" << fName << endl;
+		}
+		else {
+			cout << "File already exists: " << curr->dirName << "\\" << fName << endl;
+		}
+	}
+	*/
+	void create(string fName) {
+		auto fileIter = find_if(curr->files.begin(), curr->files.end(),
+			[fName](file* f) { return f->getName() == fName; });
+
+		if (fileIter == curr->files.end()) {
+			file* newFile = new file{ fName, getTimeDate(), {}, "", curr };
+			editor.editFile(fName);
+			string format = fName;
+			format += ".txt";
+			ifstream reader(format);
+			while (reader)
+			{
+				string dummy = "";
+				getline(reader, dummy);
+				newFile->content.push_back(dummy);
+				dummy.clear();
 			}
 			curr->files.push_back(newFile);
 			cout << "File created: " << curr->dirName << "\\" << fName << endl;
