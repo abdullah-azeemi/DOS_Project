@@ -135,11 +135,7 @@ class textEditor
 		//erase from opened files
 		auto itr = find(openedFiles.begin(), openedFiles.end(), fileName);
 		openedFiles.erase(itr);
-		currOpenedFile++;
-		if (currOpenedFile == openedFiles.end())
-		{
-			currOpenedFile = openedFiles.begin();
-		}
+		currOpenedFile = openedFiles.begin();
 		fileName += ".txt";
 		ofstream writeBack(fileName);
 		for (auto rItr = paragraph.begin(); rItr != paragraph.end(); rItr++)
@@ -155,7 +151,6 @@ class textEditor
 
 	void loadFile(string fileName)
 	{
-		this->openedFiles.push_back(fileName);//add name to opened files
 		currOpenedFile = openedFiles.end();
 		currOpenedFile--;
 		string format = fileName;
@@ -209,7 +204,7 @@ public:
 
 	void editFile(string fileName,bool load=false)
 	{
-
+		this->openedFiles.push_back(fileName);//add name to opened files
 		//set color to white
 		system("color f0");
 		system("cls");
