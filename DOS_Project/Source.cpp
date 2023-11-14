@@ -2,7 +2,7 @@
 #include"DOS.h"
 #include"TextEditor.h"
 
-int mains() {
+int main() {
     DOS dos;
 
     // Sample commands to demonstrate functionality
@@ -56,7 +56,7 @@ int mains() {
 
 }
 
-int main()
+int mains()
 {
     DOS d;
     d.run();
