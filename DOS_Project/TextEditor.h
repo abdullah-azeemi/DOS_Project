@@ -195,6 +195,23 @@ class textEditor
 		}
 	}
 
+	//VIM FUNCTIONS
+	int countSentences()const
+	{
+		int sentence = 0;
+		for (auto rItr = paragraph.begin(); rItr != paragraph.end(); rItr++)
+		{
+			for (auto cItr = (*rItr).begin(); cItr != (*rItr).end(); cItr++)
+			{
+				if ((*cItr) == '.' || (*cItr) == '?' || (*cItr) == '!')
+				{
+					sentence++;
+				}
+			}
+		}
+		return sentence;
+	}
+
 public:
 	
 	textEditor() :paragraph({ list<char>() }), cursorRow(0), cursorCol(0)
