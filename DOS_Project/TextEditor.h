@@ -7,6 +7,10 @@ class textEditor
 	list<list<char>>::iterator lineNumber;
 	list<char>::iterator currLetter;
 
+	//multiple files 
+	list<string> openedFiles;
+	list<string>::iterator currOpenedFile;
+
 	//cursor
 	int cursorRow;
 	int cursorCol;
@@ -126,8 +130,16 @@ class textEditor
 		redo.clear();
 	}
 
-	void saveFile(string fileName)
+	void saveFileExit(string fileName)
 	{
+		//erase from opened files
+		auto itr = find(openedFiles.begin(), openedFiles.end(), fileName);
+		openedFiles.erase(itr);
+		currOpenedFile++;
+		if (currOpenedFile == openedFiles.end())
+		{
+			currOpenedFile = openedFiles.begin();
+		}
 		fileName += ".txt";
 		ofstream writeBack(fileName);
 		for (auto rItr = paragraph.begin(); rItr != paragraph.end(); rItr++)
@@ -143,6 +155,9 @@ class textEditor
 
 	void loadFile(string fileName)
 	{
+		this->openedFiles.push_back(fileName);//add name to opened files
+		currOpenedFile = openedFiles.end();
+		currOpenedFile--;
 		string format = fileName;
 		format += ".txt";
 		bool isFirst = true;
@@ -170,6 +185,19 @@ class textEditor
 			advance(currLetter, cursorCol-1);
 		displayParagraph();
 		gotoRowCol(cursorRow, cursorCol);
+	}
+
+	void switchFiles()//to allow opening multiple files
+	{
+		if (this->openedFiles.size() == 1)
+		{
+			return;
+		}
+		currOpenedFile++;
+		if (currOpenedFile == openedFiles.end())
+		{
+			currOpenedFile = openedFiles.begin();
+		}
 	}
 
 public:
@@ -394,7 +422,7 @@ public:
 			{
 				system("cls");
 				system("color 0f");
-				saveFile(fileName);
+				saveFileExit(fileName);
 				break;
 			}
 			else//data entry
