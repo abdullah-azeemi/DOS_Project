@@ -19,7 +19,6 @@
 
 #define _CRT_SECURE_NO_WARNINGS // suppresing for ctime warning
 
-
 using namespace std;
 
 static void getRowColbyLeftClick(int& rpos, int& cpos)
