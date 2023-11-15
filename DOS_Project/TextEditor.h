@@ -590,6 +590,16 @@ public:
 		}
 		return maxWordlength;
 	}
+	int smallestWordlength() {
+		int minWordlength = 0;
+		for (auto line : dummyParagraph) {
+			int colItr = 0;
+			for (auto word : line) {
+				min(minWordlength, word.size());
+			}
+		}
+		return minWordlength;
+	}
 
 	position findSubword(string subword) {
 		position ans{ -1,-1 };
