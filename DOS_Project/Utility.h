@@ -21,6 +21,10 @@
 
 using namespace std;
 
+static struct position {
+	int ri;
+	int ci;
+};
 static void getRowColbyLeftClick(int& rpos, int& cpos)
 {
 	HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);

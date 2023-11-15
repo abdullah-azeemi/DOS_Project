@@ -3,9 +3,14 @@
 
 class textEditor
 {
+	// for editing mode only ---------------//
 	list<list<char>> paragraph;
 	list<list<char>>::iterator lineNumber;
 	list<char>::iterator currLetter;
+
+	// for processing mode only --------------// 
+	list<vector<string>> dummyParagraph;
+	list<vector<string>>::iterator dummyLineNumber;
 
 	//multiple files 
 	list<string> openedFiles;
@@ -48,7 +53,7 @@ class textEditor
 
 		textState newState(dQ.back());
 		dQ.pop_back();
-		
+
 		this->deleteParagraph();
 
 		paragraph = newState.savePara;
@@ -57,8 +62,8 @@ class textEditor
 		lineNumber = paragraph.begin();
 		advance(lineNumber, cursorRow);
 		currLetter = lineNumber->begin();
-		if(lineNumber->size()!=0)
-			advance(currLetter, cursorCol-1);
+		if (lineNumber->size() != 0)
+			advance(currLetter, cursorCol - 1);
 	}
 
 	void deleteParagraph()
@@ -81,11 +86,11 @@ class textEditor
 	{
 		auto traverse = paragraph.begin();
 		advance(traverse, row);
-		int limit = traverse->size()+2;
+		int limit = traverse->size() + 2;
 		gotoRowCol(row, 0);
 		for (int i = 0; i < limit; i++)
 		{
-			cout<<" ";
+			cout << " ";
 		}
 		gotoRowCol(cursorRow, cursorCol);
 	}
@@ -118,7 +123,7 @@ class textEditor
 
 	//splicing helper,sets iterator accordingly
 
-	void spliceHelper(list<char>& sender, list<char>& receiver,const int& combineAt)
+	void spliceHelper(list<char>& sender, list<char>& receiver, const int& combineAt)
 	{
 		auto itr = sender.begin();
 		advance(itr, combineAt);
@@ -174,10 +179,10 @@ class textEditor
 			line.clear();
 		}
 		currLetter = lineNumber->begin();
-		cursorRow = paragraph.size()-1;
+		cursorRow = paragraph.size() - 1;
 		cursorCol = lineNumber->size();
-		if(cursorCol!=0)//boundary check as advance also decrements
-			advance(currLetter, cursorCol-1);
+		if (cursorCol != 0)//boundary check as advance also decrements
+			advance(currLetter, cursorCol - 1);
 		displayParagraph();
 		gotoRowCol(cursorRow, cursorCol);
 	}
@@ -213,13 +218,15 @@ class textEditor
 	}
 
 public:
-	
+
+
+
 	textEditor() :paragraph({ list<char>() }), cursorRow(0), cursorCol(0)
 	{
 		lineNumber = paragraph.begin();
 	}
 
-	void editFile(string fileName,bool load=false)
+	void editFile(string fileName, bool load = false)
 	{
 		this->openedFiles.push_back(fileName);//add name to opened files
 		//set color to white
@@ -239,7 +246,7 @@ public:
 			if (currButtonPressed == 224)//are arrow keys
 			{
 				currButtonPressed = _getch();
-				
+
 				if (currButtonPressed == 72)//Up
 				{
 					if (cursorRow != 0)
@@ -338,8 +345,8 @@ public:
 					cursorRow--;
 					paragraph.erase(temp);
 					currLetter = lineNumber->begin();
-					if(old!=0)
-						advance(currLetter, cursorCol-1);
+					if (old != 0)
+						advance(currLetter, cursorCol - 1);
 					displayParagraph();
 					continue;
 				}
@@ -437,11 +444,24 @@ public:
 				saveFileExit(fileName);
 				break;
 			}
+
+			else if (currButtonPressed == 19) { // Ctrl + S
+				saveContent();
+				bool x = false;
+				// Testing all form here //
+				position an = findWord("cat", x);
+				int w = findSentence("i am a very good cat");
+				position w1 = findSubword("ver");
+				int avg = averageWordlenght();
+				int sp = specialCharacters();
+				int sCount = noOfSentences();
+			}
+
 			else//data entry
 			{
 				emptyRedoQueue();
 				saveState(undo);
-				if (lineNumber->empty() || (cursorCol==0 && lineNumber->size()!=0))//insert at front
+				if (lineNumber->empty() || (cursorCol == 0 && lineNumber->size() != 0))//insert at front
 				{
 					lineNumber->push_front(currButtonPressed);//automatically converts to ascii to char
 					currLetter = (*lineNumber).begin();
@@ -467,4 +487,140 @@ public:
 			gotoRowCol(cursorRow, cursorCol);//for arrows
 		}
 	}
+
+	void saveContent() {
+
+		// first we will delete the deep copy
+		for (auto itr : dummyParagraph) {
+			itr.clear();
+		}
+		dummyParagraph.clear();
+
+		for (auto itr : paragraph) {
+			vector<string> words;
+			string word;
+			for (auto charItr = itr.begin(); charItr != itr.end(); ++charItr) {
+				if (*charItr == ' ' || *charItr == ',' || *charItr == '.') {
+					words.push_back(word);
+					word.clear();
+				}
+				else {
+					word += *charItr;
+				}
+			}
+			if (word.empty() == false) {
+				words.push_back(word);
+			}
+			dummyParagraph.push_back(words);
+		}
+
+	}
+
+	// caseSensitive
+	position findWord(string findWord, bool& isFound) {
+		position ans{ -1,-1 }; // -1 for not found
+		int rowItr = 0;
+		for (auto line : dummyParagraph) {
+			int colItr = 0;
+			for (auto word : line) {
+				if (word == findWord) {
+					ans.ri = rowItr;
+					ans.ci = colItr;
+					isFound = true;
+					return ans;
+				}
+				colItr++;
+			}
+			rowItr++;
+		}
+		return ans;
+	}
+	int findSentence(string findSentence) {
+		int row = 0;
+		for (auto line : dummyParagraph) {
+			string sentence;
+			for (auto word : line) {
+				sentence += word;
+				sentence += " ";
+			}
+			if (!sentence.empty()) {
+				sentence.pop_back();
+			}
+
+			if (sentence == findSentence) {
+				return row;
+			}
+			row++;
+		}
+		return -1;
+	}
+	int averageWordlenght() {
+		int nItr = 0, sum = 0;
+		for (auto line : dummyParagraph) {
+			for (auto word : line) {
+				sum += word.size();
+				nItr++;
+			}
+		}
+		return sum / nItr;
+		
+	}
+	int noOfSentences() {
+		int countSentences = 0;
+		for (auto line : dummyParagraph) {
+			string sentence;
+			for (auto word : line) {
+				sentence += word;
+				sentence += " ";
+			}
+			if (!sentence.empty()) {
+				sentence.pop_back();
+			}
+			countSentences++;
+		}
+		return countSentences;
+	}
+	int largestWordlength() {
+		int maxWordlength = 0;
+		for (auto line : dummyParagraph) {
+			int colItr = 0;
+			for (auto word : line) {
+				max(maxWordlength, word.size());
+			}
+		}
+		return maxWordlength;
+	}
+
+	position findSubword(string subword) {
+		position ans{ -1,-1 };
+		int row = 0;
+		for (auto line : dummyParagraph) {
+			int col = 0;
+			for (auto word : line) {
+				size_t found = word.find(subword);
+				if (found != string::npos) {
+					ans = { row,col };
+					return ans;
+				}
+				col++;
+			}
+			row++;
+		}
+		return ans;
+	}
+	int specialCharacters() {
+		int count = 0;
+		for (auto line : dummyParagraph) {
+			for (auto word : line) {
+				for (auto ch : word) {
+					if (!isalnum(ch)) {
+						count++;
+					}
+				}
+			}
+		}
+		return count;
+	}
+
+
 };
