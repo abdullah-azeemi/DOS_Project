@@ -10,6 +10,7 @@ class textEditor
 
 	// for processing mode only --------------// 
 	list<vector<string>> dummyParagraph;
+	vector<char> dummyDelimeters;
 	list<vector<string>>::iterator dummyLineNumber;
 
 	//multiple files 
@@ -19,6 +20,9 @@ class textEditor
 	//cursor
 	int cursorRow;
 	int cursorCol;
+
+	// Delimeters
+	vector<char> delimeters{ ' ', ',', '.', '?', '!', '/', ';' };
 
 	struct textState
 	{
@@ -95,10 +99,11 @@ class textEditor
 		gotoRowCol(cursorRow, cursorCol);
 	}
 
-	void displayLine(const list<char>& line)const
+	void displayLine(const list<char>& line, int clr = 0)const
 	{
 		clean(cursorRow);
 		gotoRowCol(cursorRow, 0);
+		SetClr(clr, 15);
 		for (auto itr = line.begin(); itr != line.end(); itr++)
 		{
 			cout << *itr;
@@ -215,6 +220,15 @@ class textEditor
 			}
 		}
 		return sentence;
+	}
+
+	bool compare(int rowIter, int colIter, vector<position> selectedPos) {
+		for (int ri = 0; ri < selectedPos.size(); ri++) {
+			if (rowIter == selectedPos[ri].ri && colIter == selectedPos[ri].ci) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 public:
@@ -445,16 +459,22 @@ public:
 				break;
 			}
 
-			else if (currButtonPressed == 19) { // Ctrl + S
+			else if (currButtonPressed == 19) { // Ctrl + S // testing processing functions here
 				saveContent();
 				bool x = false;
 				// Testing all form here //
-				position an = findWord("cat", x);
+				vector<position> an = findWord("cat", x);
 				int w = findSentence("i am a very good cat");
 				position w1 = findSubword("ver");
 				int avg = averageWordlenght();
 				int sp = specialCharacters();
 				int sCount = noOfSentences();
+				printProcessing(an);
+
+				addPrefix("cat", "meow");
+				printProcessing();
+				_getch();
+				saveContentreverse();
 			}
 
 			else//data entry
@@ -488,6 +508,7 @@ public:
 		}
 	}
 
+	// form editing to processing
 	void saveContent() {
 
 		// first we will delete the deep copy
@@ -500,10 +521,12 @@ public:
 			vector<string> words;
 			string word;
 			for (auto charItr = itr.begin(); charItr != itr.end(); ++charItr) {
-				if (*charItr == ' ' || *charItr == ',' || *charItr == '.') {
+				if (std::ranges::find(delimeters, *charItr) != delimeters.end()) {
+					dummyDelimeters.push_back(*charItr);
 					words.push_back(word);
 					word.clear();
 				}
+				
 				else {
 					word += *charItr;
 				}
@@ -515,23 +538,47 @@ public:
 		}
 
 	}
+	// from processing to editing
+	void saveContentreverse() {
+		
+		for (auto& line : paragraph) {
+			line.clear(); 
+		}
+		paragraph.clear(); 
 
+		for (auto words : dummyParagraph) {
+			string line;
+			for (auto word : words) {
+				line += word + " ";
+			}
+			list<char> charList(line.begin(), line.end());
+			paragraph.push_back(charList);
+		}
+	}
+
+
+	// Processing Mode functions ----------------//
 	// caseSensitive
-	position findWord(string findWord, bool& isFound) {
-		position ans{ -1,-1 }; // -1 for not found
+	vector<position> findWord(string findWord, bool& isFound) {
+		position defaultCase{ -1,-1 }; // -1 for not found
+		vector<position> ans;
 		int rowItr = 0;
 		for (auto line : dummyParagraph) {
 			int colItr = 0;
 			for (auto word : line) {
 				if (word == findWord) {
-					ans.ri = rowItr;
-					ans.ci = colItr;
+					position pos;
+					pos.ri = rowItr;
+					pos.ci = colItr;
 					isFound = true;
-					return ans;
+					ans.push_back(pos);
 				}
 				colItr++;
 			}
 			rowItr++;
+		}
+		if (ans.size() == 0) {
+			ans.push_back(defaultCase);
 		}
 		return ans;
 	}
@@ -563,7 +610,7 @@ public:
 			}
 		}
 		return sum / nItr;
-		
+
 	}
 	int noOfSentences() {
 		int countSentences = 0;
@@ -632,5 +679,58 @@ public:
 		return count;
 	}
 
+	// findWord Next 
+	
+
+	void printProcessing(vector<position> selectedPos = {}) {
+		system("color f0");
+		system("cls");
+		int clr = 0;
+		int rowIter = 0;
+		SetClr(0, 15);
+		for (auto line : dummyParagraph) {
+			int colIter = 0;
+			for (auto word : line) {
+				
+				if (compare(rowIter, colIter, selectedPos)) {
+					SetClr(clr = 1, 15);
+					cout << word << " ";
+					SetClr(clr = 0, 15);
+				}
+				else {
+					cout << word << " ";
+				}
+				colIter++;
+			}
+			colIter = 0;
+			rowIter++;
+			if (dummyDelimeters.size() - 1 >= rowIter) {
+				cout << dummyDelimeters[rowIter];
+			}
+			cout << endl;
+			
+		}
+	}
+
+	void addPostfix(string findWord, string postWord) {
+		for (auto& line : dummyParagraph) {
+			int colItr = 0;
+			for (auto& word : line) {
+				if (word == findWord) {
+					word += postWord;
+				}
+			}
+		}
+	}
+	void addPrefix(string findWord, string preWord) {
+		for (auto& line : dummyParagraph) {
+			for (auto& word : line) {
+				if (word == findWord) {
+					word = preWord + word;
+				}
+			}
+		}
+	}
 
 };
+ 

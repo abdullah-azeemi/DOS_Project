@@ -54,6 +54,11 @@ static void SetClr(int clr)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), clr);
 }
+static void SetClr(int textColor, int bgColor)
+{
+	int color = static_cast<int>(textColor) + static_cast<int>(bgColor) * 16;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
 static void displayHeader(string Version, string Credits) {
 	gotoRowCol(0, 25);
 	cout << Version;
