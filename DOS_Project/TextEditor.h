@@ -470,7 +470,7 @@ public:
 				int sp = specialCharacters();
 				int sCount = noOfSentences();
 				printProcessing(an);
-
+				_getch();
 				addPrefix("cat", "meow");
 				printProcessing();
 				_getch();
