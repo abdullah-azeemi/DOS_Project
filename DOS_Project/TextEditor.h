@@ -460,6 +460,9 @@ public:
 			}
 
 			else if (currButtonPressed == 19) { // Ctrl + S // testing processing functions here
+				processingMode();
+				//movementInProcessing();for testing arrow keys
+				/*
 				saveContent();
 				bool x = false;
 				// Testing all form here //
@@ -475,6 +478,7 @@ public:
 				printProcessing();
 				_getch();
 				saveContentreverse();
+				*/
 			}
 
 			else//data entry
@@ -732,5 +736,88 @@ public:
 		}
 	}
 
+	//processing Mode Main
+	void processingMode()
+	{
+		saveContent();
+		bool x = false;
+		// Testing all form here //
+		vector<position> an = findWord("cat", x);
+		int w = findSentence("i am a very good cat");
+		position w1 = findSubword("ver");
+		int avg = averageWordlenght();
+		int sp = specialCharacters();
+		int sCount = noOfSentences();
+		printProcessing(an);
+		_getch();
+		addPrefix("cat", "meow");
+		printProcessing();
+		_getch();
+		saveContentreverse();
+	}
+
+
+	void movementInProcessing()//later will be placed in processing mode
+	{
+		saveContent();
+		list<vector<string>>::iterator dummyLineNumberV2;
+		vector<string>::iterator currentWord;
+		int pRow, pCol;
+		dummyLineNumberV2 = dummyParagraph.begin();
+		currentWord = (*dummyLineNumberV2).begin();
+		int currButtonPressed;
+		pRow = 0;
+		pCol = 0;
+		printProcessing();
+		gotoRowCol(pRow, pCol);
+		while (true)
+		{
+			currButtonPressed = _getch();
+			if (currButtonPressed == 224)//are arrow keys
+			{
+				currButtonPressed = _getch();
+
+				if (currButtonPressed == 72)//Up
+				{
+					if (pRow != 0)
+					{
+						dummyLineNumberV2--;
+						pRow--;
+						pCol = 0;
+						currentWord = dummyLineNumberV2->begin();
+					}
+				}
+				else if (currButtonPressed == 75)//left
+				{
+					if (currentWord != (*dummyLineNumberV2).begin())
+					{
+						currentWord--;
+						pCol = pCol - (*currentWord).size() - 1;
+					}
+				}
+				else if (currButtonPressed == 77)//right
+				{
+					if (currentWord != (--(*dummyLineNumberV2).end()))
+					{
+						int size = currentWord->size();
+						currentWord++;
+						pCol = pCol + size + 1;
+					}
+				}
+				else if (currButtonPressed == 80)//Down
+				{
+					if (pRow != dummyParagraph.size() - 1)
+					{
+						dummyLineNumberV2++;
+						pRow++;
+						pCol = 0;
+						currentWord = dummyLineNumberV2->begin();
+					}
+				}
+			}
+			gotoRowCol(pRow, pCol);
+		}
+
+	}
 };
  
