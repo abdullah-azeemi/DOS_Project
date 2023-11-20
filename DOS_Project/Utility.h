@@ -75,3 +75,8 @@ static string getTimeDate() {
 	ss += buffer;
 	return ss;
 }
+
+static struct iteratorPosition {
+	int ri, ci;
+	vector<string>::iterator colIter;
+};
