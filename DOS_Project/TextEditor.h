@@ -610,7 +610,7 @@ public:
 		for (auto words : dummyParagraph) {
 			string line;
 			for (auto word : words) {
-				line += word + " ";
+				line += word;
 			}
 			list<char> charList(line.begin(), line.end());
 			paragraph.push_back(charList);
@@ -620,7 +620,7 @@ public:
 
 	// Processing Mode functions ----------------//
 	// caseSensitive
-	vector<position> findWord(string findWord, bool& isFound) {
+	vector<position> findWord(string findWord) {
 		position defaultCase{ -1,-1 }; // -1 for not found
 		vector<position> ans;
 		int rowItr = 0;
@@ -631,10 +631,9 @@ public:
 					position pos;
 					pos.ri = rowItr;
 					pos.ci = colItr;
-					isFound = true;
 					ans.push_back(pos);
 				}
-				colItr++;
+				colItr += word.size();
 			}
 			rowItr++;
 		}
@@ -643,7 +642,23 @@ public:
 		}
 		return ans;
 	}
-	vector<iteratorPosition> findNextall(string word, const position& cursor) {
+	void movementFindWordsCaseSensitive(string word)
+	{
+		auto items = findWord(word);
+		if (items.size() == 0)
+		{
+			gotoRowCol(80, 0);
+			cout << "No Such word was found. Press any key to continue" << endl;
+			_getch();
+			processingCleanPrompt(80);
+		}
+		else
+		{
+			//highlight
+			printProcessing(items);
+		}
+	}
+	vector<iteratorPosition> findNextAll(string word, const position& cursor) {
 		int rowIter = 0;
 		bool isFound = false;
 		vector<iteratorPosition> ans;
@@ -663,6 +678,61 @@ public:
 				colIter = itr->size() + colIter;
 			}
 			rowIter++;
+		}
+		return ans;
+	}
+	void movementFindNextAll(string word, vector<string>::iterator& currentWord,int &pRow,int&pCol)
+	{
+		auto items = findNextAll(word, position(pRow, pCol));
+		if(items.size()==0)
+		{
+			gotoRowCol(80, 0);
+			cout << "No Such word was found. Press any key to continue" << endl;
+			_getch();
+			processingCleanPrompt(80);
+		}
+		else
+		{
+			auto itr = items.begin();
+			pRow = itr->ri;
+			pCol = itr->ci;
+			currentWord = itr->colIter;
+			gotoRowCol(pRow, pCol);
+			int button;
+			while (itr != items.end())
+			{
+				button = _getch();
+				if (button == 224)//are arrow keys
+				{
+					button = _getch();
+					if (button == 75)//left
+					{
+						if (itr != items.begin())
+						{
+							itr--;
+							pRow = itr->ri;
+							pCol = itr->ci;
+							currentWord = itr->colIter;
+							gotoRowCol(pRow, pCol);
+						}
+					}
+					else if (button == 77)//right
+					{
+						if (itr != (--items.end()))
+						{
+							itr++;
+							pRow = itr->ri;
+							pCol = itr->ci;
+							currentWord = itr->colIter;
+							gotoRowCol(pRow, pCol);
+						}
+					}
+				}
+				else if (button == 27)//escape
+				{
+					break;
+				}
+			}
 		}
 	}
 	iteratorPosition findNext(string word, const position& cursor) {
@@ -709,14 +779,15 @@ public:
 		return -1;
 	}
 	int averageWordlenght() {
-		int nItr = 0, sum = 0;
+		int words = 0, letters = 0;
 		for (auto line : dummyParagraph) {
 			for (auto word : line) {
-				sum += word.size();
-				nItr++;
+				if(!(isWordADelimiter(word)))
+				letters += word.size();
+				words++;
 			}
 		}
-		return sum / nItr;
+		return letters / words;
 
 	}
 	int noOfSentences() {
@@ -807,12 +878,10 @@ public:
 				else {
 					cout << word;
 				}
-				colIter++;
+				colIter+=word.size();
 			}
-			colIter = 0;
 			rowIter++;
 			cout << endl;
-			
 		}
 	}
 	void processingLinePrint(list<vector<string>>::iterator line,int row)const
@@ -839,7 +908,7 @@ public:
 	void processingCleanPrompt(int row)
 	{
 		gotoRowCol(row, 0);
-		cout << "                                                                                       " << endl;
+		cout << "                                                                                                                                                                " << endl;
 	}
 	void addPostfix(string findWord, string postWord) {
 		for (auto& line : dummyParagraph) {
@@ -861,27 +930,8 @@ public:
 		}
 	}
 
-	//processing Mode Main
+	//Processing Mode
 	void processingMode()
-	{
-		saveContent();
-		bool x = false;
-		// Testing all form here //
-		vector<position> an = findWord("cat", x);
-		int w = findSentence("i am a very good cat");
-		position w1 = findSubword("ver");
-		int avg = averageWordlenght();
-		int sp = specialCharacters();
-		int sCount = noOfSentences();
-		printProcessing(an);
-		_getch();
-		addPrefix("cat", "meow");
-		printProcessing();
-		_getch();
-		saveContentreverse();
-	}
-
-	void movementInProcessing()//later will be placed in processing mode
 	{
 		saveContent();
 		list<vector<string>>::iterator dummyLineNumberV2;
@@ -946,6 +996,7 @@ public:
 			else if (currButtonPressed == 27)//Escape move to editing mode
 			{
 				system("cls");
+				saveContentreverse();
 				break;
 			}
 			else if (currButtonPressed == 117)//U pressed Upper case word
@@ -972,6 +1023,16 @@ public:
 				processingCleanLinePrint(dummyLineNumberV2, pRow);
 				processingLinePrint(dummyLineNumberV2, pRow);
 			}
+			else if (currButtonPressed == 70)//Shift+f find word Highlight case sensitive
+			{
+				string word;
+				gotoRowCol(80, 0);
+				cout << "Enter word to find:" << endl;
+				cin >> word;
+				movementFindWordsCaseSensitive(word);
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
 			else if (currButtonPressed == 102)// f pressed find next
 			{
 				string word;
@@ -986,6 +1047,9 @@ public:
 					pRow = itrPosition.ri;
 					pCol = itrPosition.ci;
 					currentWord = itrPosition.colIter;
+					//update line number as well
+					dummyLineNumberV2 = dummyParagraph.begin();
+					advance(dummyLineNumberV2, pRow);
 				}
 				else
 				{
@@ -994,6 +1058,95 @@ public:
 					_getch();
 					processingCleanPrompt(80);
 				}
+			}
+			else if (currButtonPressed == 6)// Ctrl +F pressed find next All
+			{
+				string word;
+				gotoRowCol(80, 0);
+				cout << "Enter word to find:" << endl;
+				cin >> word;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				movementFindNextAll(word,currentWord, pRow, pCol);
+				dummyLineNumberV2 = dummyParagraph.begin();
+				advance(dummyLineNumberV2, pRow);
+			}
+			else if (currButtonPressed == 115)// S find sentence
+			{
+				string sentence;
+				gotoRowCol(79, 0);//TODO DELETE THIS
+				cout << "Abdullah ye kiya kiiya hoa tune bhai thek kr, sentence highlight ho pura" << endl;
+				gotoRowCol(80, 0);
+				cout << "Enter sentence to find:" << endl;
+				cin >> sentence;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 19)// CTRL+S find SUBSTRING
+			{
+				string subString;
+				gotoRowCol(80, 0);
+				cout << "Enter subString to find:" << endl;
+				cin >> subString;
+				position x=findSubword(subString);
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 97)//A AVERAGE word length
+			{
+				gotoRowCol(80, 0);
+				cout << "Average word length:" << averageWordlenght()<<endl<<"press any key to continue";
+				_getch();
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 65)//SHIFT+A special character count
+			{
+				gotoRowCol(80, 0);
+				cout << "Special characters count:" << specialCharacters() << endl << "press any key to continue";
+				_getch();
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 1)//CTRL+A total sentences count
+			{
+				gotoRowCol(80, 0);
+				cout << "Total sentences:" << noOfSentences() << endl << "press any key to continue";
+				_getch();
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 112)//P Prefix
+			{
+				string word;
+				gotoRowCol(80, 0);
+				cout << "Enter word to add preFix:" << endl;
+				cin >> word;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				string preFix;
+				gotoRowCol(80, 0);
+				cout << "Enter the prefix to add" << endl;
+				cin >> preFix;
+				addPrefix(word,preFix);
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 16)//CTRL+P Postfix
+			{
+				string word;
+				gotoRowCol(80, 0);
+				cout << "Enter word to add postFix:" << endl;
+				cin >> word;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				string postFix;
+				gotoRowCol(80, 0);
+				cout << "Enter the PostFix to add" << endl;
+				cin >> postFix;
+				addPostfix(word, postFix);
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
 			}
 			gotoRowCol(pRow, pCol);
 		}
