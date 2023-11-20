@@ -639,6 +639,52 @@ public:
 		}
 		return ans;
 	}
+	vector<iteratorPosition> findNextall(string word, vector<string>::iterator currentWord) {
+		int rowIter = 0;
+		bool isFound = false;
+		vector<iteratorPosition> ans;
+		for (auto line : dummyParagraph) {
+			int colIter = 0;
+			for (auto itr = line.begin(); itr != line.end(); itr++) {
+				if (itr == currentWord) {
+					isFound = true;
+				}
+				if (isFound && *(itr) == word) {
+					iteratorPosition pos;
+					pos.colIter = itr;
+					pos.ri = rowIter;
+					pos.ci = colIter;
+					ans.push_back(pos);
+				}
+				colIter = itr->size() + colIter;
+			}
+			rowIter++;
+		}
+	}
+	iteratorPosition findNext(string word, vector<string>::iterator currentWord) {
+		int rowIter = 0;
+		bool isFound = false;
+		iteratorPosition pos{};
+		pos.ri = -1;
+		pos.ci = -1;
+		for (auto line : dummyParagraph) {
+			int colIter = 0;
+			for (auto itr = line.begin(); itr != line.end(); itr++) {
+				if (itr == currentWord) {
+					isFound = true;
+				}
+				if (isFound && *(itr) == word) {
+					pos.colIter = itr;
+					pos.ri = rowIter;
+					pos.ci = colIter;
+					return pos;
+				}
+				colIter = itr->size() + colIter;
+			}
+			rowIter++;
+		}
+		return pos;
+	}
 	int findSentence(string findSentence) {
 		int row = 0;
 		for (auto line : dummyParagraph) {
