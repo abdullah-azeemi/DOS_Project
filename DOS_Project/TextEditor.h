@@ -460,9 +460,9 @@ public:
 			}
 
 			else if (currButtonPressed == 19) { // Ctrl + S // testing processing functions here
-				processingMode();
+				//processingMode();
 				//movementInProcessing();for testing arrow keys
-				/*
+				
 				saveContent();
 				bool x = false;
 				// Testing all form here //
@@ -478,7 +478,7 @@ public:
 				printProcessing();
 				_getch();
 				saveContentreverse();
-				*/
+				
 			}
 
 			else//data entry
@@ -529,6 +529,10 @@ public:
 					dummyDelimeters.push_back(*charItr);
 					words.push_back(word);
 					word.clear();
+					
+					word += *charItr;
+					words.push_back(word);
+					
 				}
 				
 				else {
@@ -698,18 +702,19 @@ public:
 				
 				if (compare(rowIter, colIter, selectedPos)) {
 					SetClr(clr = 1, 15);
-					cout << word << " ";
+					cout << word;
 					SetClr(clr = 0, 15);
 				}
 				else {
-					cout << word << " ";
+					cout << word;
 				}
 				colIter++;
 			}
 			colIter = 0;
 			rowIter++;
 			if (dummyDelimeters.size() - 1 >= rowIter) {
-				cout << dummyDelimeters[rowIter];
+				;
+				//cout << dummyDelimeters[rowIter];
 			}
 			cout << endl;
 			
