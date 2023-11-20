@@ -244,6 +244,25 @@ class DOS {
 		return path;
 	}
 
+	/*void encoding() {
+		
+
+
+	}
+	void encode(file * currentFile) {
+		vector<string> dummy;
+		for (const string& line : currentFile->content) {
+			string dummyWord = "";
+			for (auto word : line) {
+				for (auto letter : word) {
+
+				}
+			}
+			dummy.push_back(dummyWord);
+		}
+
+	}*/
+
 
 public:
 
@@ -686,7 +705,11 @@ public:
 		
 		if (fileIter != curr->files.end()) {
 			
-			if ((*fileIter)->getPassword() != _password) {
+			if (_password.size()  == 0) {
+				cout << "Password Required ....... " << endl;
+				return;
+			}
+			else if ((*fileIter)->getPassword() != _password) {
 				cout << "Invalid Password ...... " << endl;
 				return;
 			}
