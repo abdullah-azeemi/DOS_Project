@@ -159,7 +159,7 @@ class textEditor
 		this->deleteParagraph();
 	}
 
-	void loadFile(string fileName)
+	void loadFile(string fileName,bool isEncoded)
 	{
 		currOpenedFile = openedFiles.end();
 		currOpenedFile--;
@@ -179,7 +179,14 @@ class textEditor
 				isFirst = false;
 			for (int i = 0; i < line.size(); i++)
 			{
-				lineNumber->push_back(line[i]);
+				if (!isEncoded)
+				{
+					lineNumber->push_back(line[i]);
+				}
+				else
+				{
+					lineNumber->push_back(char(line[i]-10));
+				}
 			}
 			line.clear();
 		}
@@ -231,6 +238,46 @@ class textEditor
 		return false;
 	}
 
+	void toUpperWord(vector<string>::iterator& word)
+	{
+		string toUp = (*word);
+		std::for_each(toUp.begin(), toUp.end(), [](char& ch) {ch = std::toupper(ch); });
+		(*word) = toUp;
+	}
+
+	void toLowerWord(vector<string>::iterator& word)
+	{
+		string toLow = (*word);
+		std::for_each(toLow.begin(), toLow.end(), [](char& ch) {ch = std::tolower(ch); });
+		(*word) = toLow;
+	}
+	void toUpperLetter(vector<string>::iterator& word)
+	{
+		string toUp = (*word);
+		int index;
+		gotoRowCol(80, 0);
+		cout << "Enter letter Number you wish to Convert To Upper(1-BASED INDEXING" << endl;
+		cin >> index;
+		index--;
+		if (index < 0 || index >= toUp.size())
+			return;
+		std::for_each(toUp.begin()+index, toUp.begin()+index+1, [](char& ch) {ch = std::toupper(ch); });
+		(*word) = toUp;
+	}
+	void toLowerLetter(vector<string>::iterator& word)
+	{
+		string toLow = (*word);
+		int index;
+		gotoRowCol(80, 0);
+		cout << "Enter letter Number you wish to Convert To Lower(1-BASED INDEXING" << endl;
+		cin >> index;
+		index--;
+		if (index < 0 || index >= toLow.size())
+			return;
+		std::for_each(toLow.begin() + index, toLow.begin() + index + 1, [](char& ch) {ch = std::tolower(ch); });
+		(*word) = toLow;
+	}
+
 
 public:
 
@@ -240,7 +287,7 @@ public:
 		lineNumber = paragraph.begin();
 	}
 
-	void editFile(string fileName, bool load = false)
+	void editFile(string fileName, bool load = false, bool isEncoded = false)
 	{
 		this->openedFiles.push_back(fileName);//add name to opened files
 		//set color to white
@@ -248,7 +295,7 @@ public:
 		system("cls");
 		if (load)
 		{
-			loadFile(fileName);
+			loadFile(fileName,isEncoded);
 		}
 		int currButtonPressed;
 
@@ -717,7 +764,17 @@ public:
 			
 		}
 	}
-
+	void processingLinePrint(list<vector<string>>::iterator line,int row)const
+	{
+		system("color f0");
+		system("cls");
+		gotoRowCol(row, 0);
+		SetClr(0, 15);
+		for (auto itr = line->begin(); itr != line->end(); itr++)
+		{
+			cout << (*itr);
+		}
+	}
 	void addPostfix(string findWord, string postWord) {
 		for (auto& line : dummyParagraph) {
 			int colItr = 0;
@@ -820,7 +877,32 @@ public:
 					}
 				}
 			}
-			gotoRowCol(pRow, pCol);
+			else if (currButtonPressed == 27)//Escape move to editing mode
+			{
+				system("cls");
+				break;
+			}
+			else if (currButtonPressed == 117)//U pressed Upper case word
+			{
+				toUpperWord(currentWord);
+				processingLinePrint(dummyLineNumberV2,pRow);
+			}
+			else if (currButtonPressed == 21)//CTRL+U pressed Upper case letter
+			{
+				toUpperLetter(currentWord);
+				processingLinePrint(dummyLineNumberV2, pRow);
+			}
+			else if (currButtonPressed == 108)//L pressed Lower case word
+			{
+				toLowerWord(currentWord);
+				processingLinePrint(dummyLineNumberV2, pRow);
+			}
+			else if (currButtonPressed == 12)//CTRL+L pressed lower case letter
+			{
+				toLowerLetter(currentWord);
+				processingLinePrint(dummyLineNumberV2, pRow);
+			}
+
 		}
 
 	}
