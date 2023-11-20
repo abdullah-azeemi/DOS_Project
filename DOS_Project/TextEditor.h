@@ -667,9 +667,9 @@ public:
 		iteratorPosition pos{};
 		pos.ri = -1;
 		pos.ci = -1;
-		for (auto line : dummyParagraph) {
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end();lineItr++) {
 			int colIter = 0;
-			for (auto itr = line.begin(); itr != line.end(); itr++) {
+			for (auto itr = lineItr->begin(); itr != lineItr->end(); itr++) {
 				if (itr == currentWord) {
 					isFound = true;
 				}
@@ -962,6 +962,10 @@ public:
 			{
 				toLowerLetter(currentWord);
 				processingLinePrint(dummyLineNumberV2, pRow);
+			}
+			else if (currButtonPressed == 102)// f pressed find next
+			{
+				findNext("meow", currentWord);
 			}
 			gotoRowCol(pRow, pCol);
 		}
