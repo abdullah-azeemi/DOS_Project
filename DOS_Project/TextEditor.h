@@ -903,7 +903,7 @@ public:
 				toLowerLetter(currentWord);
 				processingLinePrint(dummyLineNumberV2, pRow);
 			}
-
+			gotoRowCol(pRow, pCol);
 		}
 
 	}
