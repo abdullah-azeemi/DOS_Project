@@ -776,6 +776,20 @@ public:
 			cout << (*itr);
 		}
 	}
+	void processingCleanLinePrint(list<vector<string>>::iterator line, int row)const
+	{
+		system("color f0");
+		system("cls");
+		gotoRowCol(row, 0);
+		SetClr(0, 15);
+		for (auto itr = line->begin(); itr != line->end(); itr++)
+		{
+			for (int i = 0; i < itr->size(); i++)
+			{
+				cout << " ";
+			}
+		}
+	}
 	void addPostfix(string findWord, string postWord) {
 		for (auto& line : dummyParagraph) {
 			int colItr = 0;
