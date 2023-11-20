@@ -514,7 +514,7 @@ public:
 			else if (currButtonPressed == 19) { // Ctrl + S // testing processing functions here
 				//processingMode();
 				processingMode();//Processing Mode
-				
+				displayParagraph();
 			}
 
 			else//data entry
@@ -598,6 +598,10 @@ public:
 			}
 			list<char> charList(line.begin(), line.end());
 			paragraph.push_back(charList);
+			lineNumber = paragraph.begin();
+			currLetter = lineNumber->begin();
+			cursorCol = 0;
+			cursorRow = 0;
 		}
 	}
 
@@ -1137,6 +1141,7 @@ public:
 				addPrefix(word,preFix);
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
+				printProcessing();
 			}
 			else if (currButtonPressed == 16)//CTRL+P Postfix
 			{
@@ -1153,6 +1158,7 @@ public:
 				addPostfix(word, postFix);
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
+				printProcessing();
 			}
 			gotoRowCol(pRow, pCol);
 		}
