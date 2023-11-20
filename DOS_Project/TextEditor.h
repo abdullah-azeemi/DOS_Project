@@ -1484,6 +1484,8 @@ public:
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
 				movementReplaceWords(word,newWord);
+				pCol = 0;
+				currentWord = dummyLineNumberV2->begin();
 			}
 			else if (currButtonPressed == 114)// r pressed replace next
 			{
