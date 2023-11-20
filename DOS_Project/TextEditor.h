@@ -256,7 +256,7 @@ class textEditor
 		string toUp = (*word);
 		int index;
 		gotoRowCol(80, 0);
-		cout << "Enter letter Number you wish to Convert To Upper(1-BASED INDEXING" << endl;
+		cout << "Enter letter Number you wish to Convert To Upper(1-BASED INDEXING)" << endl;
 		cin >> index;
 		index--;
 		if (index < 0 || index >= toUp.size())
@@ -269,7 +269,7 @@ class textEditor
 		string toLow = (*word);
 		int index;
 		gotoRowCol(80, 0);
-		cout << "Enter letter Number you wish to Convert To Lower(1-BASED INDEXING" << endl;
+		cout << "Enter letter Number you wish to Convert To Lower(1-BASED INDEXING)" << endl;
 		cin >> index;
 		index--;
 		if (index < 0 || index >= toLow.size())
