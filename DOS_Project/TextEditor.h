@@ -206,21 +206,6 @@ class textEditor
 	}
 
 	//VIM FUNCTIONS
-	int countSentences()const
-	{
-		int sentence = 0;
-		for (auto rItr = paragraph.begin(); rItr != paragraph.end(); rItr++)
-		{
-			for (auto cItr = (*rItr).begin(); cItr != (*rItr).end(); cItr++)
-			{
-				if ((*cItr) == '.' || (*cItr) == '?' || (*cItr) == '!')
-				{
-					sentence++;
-				}
-			}
-		}
-		return sentence;
-	}
 
 	bool compare(int rowIter, int colIter, vector<position> selectedPos) {
 		for (int ri = 0; ri < selectedPos.size(); ri++) {
@@ -231,8 +216,23 @@ class textEditor
 		return false;
 	}
 
-public:
+	bool isWordADelimiter(const string& word)
+	{
+		if (word.size() != 1)
+		{
+			return false;
+		}
 
+		char c = word[0];
+		if (std::ranges::find(delimeters, c) != delimeters.end())
+		{
+			return true;
+		}
+		return false;
+	}
+
+
+public:
 
 
 	textEditor() :paragraph({ list<char>() }), cursorRow(0), cursorCol(0)
