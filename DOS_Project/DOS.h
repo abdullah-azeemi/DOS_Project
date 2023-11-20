@@ -681,8 +681,9 @@ public:
 
 			if (newFile->isProtected) {
 				encode(newFile, format);
+				cout << "File : '" << fName << "'  encoded... " << endl;
 			}
-			cout << "File : '" << fName << "'  encoded... " << endl;
+			
 			
 		}
 		else {

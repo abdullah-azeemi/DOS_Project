@@ -282,6 +282,7 @@ class textEditor
 public:
 
 
+
 	textEditor() :paragraph({ list<char>() }), cursorRow(0), cursorCol(0)
 	{
 		lineNumber = paragraph.begin();
