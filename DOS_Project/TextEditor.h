@@ -675,7 +675,7 @@ public:
 		if(items.size()==0)
 		{
 			gotoRowCol(80, 0);
-			cout << "No Such word was found. Press any key to continue" << endl;
+			cout << "No Such word was found after cursor. Press any key to continue" << endl;
 			_getch();
 			processingCleanPrompt(80);
 		}
@@ -723,15 +723,18 @@ public:
 			}
 		}
 	}
-	iteratorPosition findNext(string word, const position& cursor) {
+	iteratorPosition findNext(string word, const position& cursor) 
+	{
 		int rowIter = 0;
 		bool isFound = false;
 		iteratorPosition pos{};
 		pos.ri = -1;
 		pos.ci = -1;
-		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end();lineItr++) {
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end();lineItr++) 
+		{
 			int colIter = 0;
-			for (auto itr = lineItr->begin(); itr != lineItr->end(); itr++) {
+			for (auto itr = lineItr->begin(); itr != lineItr->end(); itr++) 
+			{
 				if (rowIter==cursor.ri && colIter==cursor.ci) {
 					isFound = true;
 				}
@@ -746,6 +749,117 @@ public:
 			rowIter++;
 		}
 		return pos;
+	}
+	iteratorPosition findPrev(string word, const position& cursor) 
+	{
+		int rowIter = 0;
+		vector<iteratorPosition> ans;
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end(); lineItr++) {
+			int colIter = 0;
+			for (auto itr = lineItr->begin(); itr != lineItr->end(); itr++) {
+				if (rowIter == cursor.ri && colIter == cursor.ci) {
+					if (ans.empty())
+					{
+						iteratorPosition p;
+						p.ci = -1;
+						p.ri = -1;
+						return p;
+					}
+					return ans[ans.size() - 1];
+				}
+				if (*(itr) == word) {
+					iteratorPosition pos;
+					pos.colIter = itr;
+					pos.ri = rowIter;
+					pos.ci = colIter;
+					ans.push_back(pos);
+				}
+				colIter = itr->size() + colIter;
+			}
+			rowIter++;
+		}
+		iteratorPosition dummy;
+		dummy.ri = -1;
+		dummy.ci = -1;
+		return dummy;
+	}
+	vector<iteratorPosition> findPrevAll(string word, const position& cursor) {
+		int rowIter = 0;
+		vector<iteratorPosition> ans;
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end(); lineItr++) {
+			int colIter = 0;
+			for (auto itr = lineItr->begin(); itr != lineItr->end(); itr++) {
+				if (rowIter == cursor.ri && colIter == cursor.ci)
+				{
+						reverse(ans.begin(), ans.end());
+						return ans;
+				}
+				if (*(itr) == word) {
+					iteratorPosition pos;
+					pos.colIter = itr;
+					pos.ri = rowIter;
+					pos.ci = colIter;
+					ans.push_back(pos);
+				}
+				colIter = itr->size() + colIter;
+			}
+			rowIter++;
+		}
+		return ans;
+	}
+	void movementFindPrevAll(string word, vector<string>::iterator& currentWord, int& pRow, int& pCol)
+	{
+		auto items = findPrevAll(word, position(pRow, pCol));
+		if (items.size() == 0)
+		{
+			gotoRowCol(80, 0);
+			cout << "No Such word was found Before Cursor. Press any key to continue" << endl;
+			_getch();
+			processingCleanPrompt(80);
+		}
+		else
+		{
+			auto itr = items.begin();
+			pRow = itr->ri;
+			pCol = itr->ci;
+			currentWord = itr->colIter;
+			gotoRowCol(pRow, pCol);
+			int button;
+			while (itr != items.end())
+			{
+				button = _getch();
+				if (button == 224)//are arrow keys
+				{
+					button = _getch();
+					if (button == 75)//left
+					{
+						if (itr != (--items.end()))
+						{
+							itr++;
+							pRow = itr->ri;
+							pCol = itr->ci;
+							currentWord = itr->colIter;
+							gotoRowCol(pRow, pCol);
+						}
+					}
+					else if (button == 77)//right
+					{
+						if (itr !=items.begin())
+						{
+							itr--;
+							pRow = itr->ri;
+							pCol = itr->ci;
+							currentWord = itr->colIter;
+							gotoRowCol(pRow, pCol);
+						}
+					}
+				}
+				else if (button == 27)//escape
+				{
+					break;
+				}
+			}
+		}
 	}
 	int findSentence(string findSentence) {
 		int row = 0;
@@ -1048,7 +1162,7 @@ public:
 				else
 				{
 					gotoRowCol(80, 0);
-					cout << "No Such word was found. Press any key to continue" << endl;
+					cout << "No Such word was found after cursor. Press any key to continue" << endl;
 					_getch();
 					processingCleanPrompt(80);
 				}
@@ -1061,7 +1175,45 @@ public:
 				cin >> word;
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
-				movementFindNextAll(word,currentWord, pRow, pCol);
+				movementFindNextAll(word, currentWord, pRow, pCol);
+				dummyLineNumberV2 = dummyParagraph.begin();
+				advance(dummyLineNumberV2, pRow);
+			}
+			else if (currButtonPressed == 100)// D pressed find prev
+			{
+				string word;
+				gotoRowCol(80, 0);
+				cout << "Enter word to find:" << endl;
+				cin >> word;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				auto itrPosition = findPrev(word, position(pRow, pCol));
+				if (itrPosition.ri != -1)
+				{
+					pRow = itrPosition.ri;
+					pCol = itrPosition.ci;
+					currentWord = itrPosition.colIter;
+					//update line number as well
+					dummyLineNumberV2 = dummyParagraph.begin();
+					advance(dummyLineNumberV2, pRow);
+				}
+				else
+				{
+					gotoRowCol(80, 0);
+					cout << "No Such word was found before cursor. Press any key to continue" << endl;
+					_getch();
+					processingCleanPrompt(80);
+				}
+				}
+			else if (currButtonPressed == 4)// Ctrl +D pressed find prev All
+			{
+				string word;
+				gotoRowCol(80, 0);
+				cout << "Enter word to find:" << endl;
+				cin >> word;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				movementFindPrevAll(word, currentWord, pRow, pCol);
 				dummyLineNumberV2 = dummyParagraph.begin();
 				advance(dummyLineNumberV2, pRow);
 			}
