@@ -609,7 +609,6 @@ public:
 	// Processing Mode functions ----------------//
 	// caseSensitive
 	vector<position> findWord(string findWord) {
-		position defaultCase{ -1,-1 }; // -1 for not found
 		vector<position> ans;
 		int rowItr = 0;
 		for (auto line : dummyParagraph) {
@@ -625,14 +624,49 @@ public:
 			}
 			rowItr++;
 		}
-		if (ans.size() == 0) {
-			ans.push_back(defaultCase);
-		}
 		return ans;
 	}
 	void movementFindWordsCaseSensitive(string word)
 	{
 		auto items = findWord(word);
+		if (items.size() == 0)
+		{
+			gotoRowCol(80, 0);
+			cout << "No Such word was found. Press any key to continue" << endl;
+			_getch();
+			processingCleanPrompt(80);
+		}
+		else
+		{
+			//highlight
+			printProcessing(items);
+		}
+	}
+	vector<position> replaceWord(string findWord,string newWord) 
+	{
+		vector<position> ans;
+		int rowItr = 0;
+		for (auto lineItr=dummyParagraph.begin();lineItr!=dummyParagraph.end();lineItr++) 
+		{
+			int colItr = 0;
+			for (auto wordItr=(*lineItr).begin();wordItr!=(*lineItr).end();wordItr++)
+			{
+				if ((*wordItr) == findWord) {
+					position pos;
+					(*wordItr) = newWord;
+					pos.ri = rowItr;
+					pos.ci = colItr;
+					ans.push_back(pos);
+				}
+				colItr += (*wordItr).size();
+			}
+			rowItr++;
+		}
+		return ans;
+	}
+	void movementReplaceWords(string word,string newWord)
+	{
+		auto items = replaceWord(word,newWord);
 		if (items.size() == 0)
 		{
 			gotoRowCol(80, 0);
@@ -1434,6 +1468,22 @@ public:
 				movementFindPrevAll(word, currentWord, pRow, pCol);
 				dummyLineNumberV2 = dummyParagraph.begin();
 				advance(dummyLineNumberV2, pRow);
+			}
+			else if (currButtonPressed == 82)//Shift+r replace word Highlight
+			{
+				string word;
+				string newWord;
+				gotoRowCol(80, 0);
+				cout << "Enter word to find:" << endl;
+				cin >> word;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				gotoRowCol(80, 0);
+				cout << "Enter word to replace:" << endl;
+				cin >> newWord;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				movementReplaceWords(word,newWord);
 			}
 			else if (currButtonPressed == 114)// r pressed replace next
 			{
