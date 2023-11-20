@@ -24,6 +24,15 @@ using namespace std;
 static struct position {
 	int ri;
 	int ci;
+	position()
+	{
+		ri = -1;
+		ci = -1;
+	}
+	position(const int& r, const int& c) :ri(r), ci(c)
+	{
+		;
+	}
 };
 static void getRowColbyLeftClick(int& rpos, int& cpos)
 {

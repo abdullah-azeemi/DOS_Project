@@ -258,6 +258,8 @@ class textEditor
 		gotoRowCol(80, 0);
 		cout << "Enter letter Number you wish to Convert To Upper(1-BASED INDEXING)" << endl;
 		cin >> index;
+		processingCleanPrompt(80);
+		processingCleanPrompt(81);
 		index--;
 		if (index < 0 || index >= toUp.size())
 			return;
@@ -271,6 +273,8 @@ class textEditor
 		gotoRowCol(80, 0);
 		cout << "Enter letter Number you wish to Convert To Lower(1-BASED INDEXING)" << endl;
 		cin >> index;
+		processingCleanPrompt(80);
+		processingCleanPrompt(81);
 		index--;
 		if (index < 0 || index >= toLow.size())
 			return;
@@ -639,14 +643,14 @@ public:
 		}
 		return ans;
 	}
-	vector<iteratorPosition> findNextall(string word, vector<string>::iterator currentWord) {
+	vector<iteratorPosition> findNextall(string word, const position& cursor) {
 		int rowIter = 0;
 		bool isFound = false;
 		vector<iteratorPosition> ans;
-		for (auto line : dummyParagraph) {
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end(); lineItr++) {
 			int colIter = 0;
-			for (auto itr = line.begin(); itr != line.end(); itr++) {
-				if (itr == currentWord) {
+			for (auto itr = lineItr->begin(); itr != lineItr->end(); itr++) {
+				if (rowIter == cursor.ri && colIter == cursor.ci) {
 					isFound = true;
 				}
 				if (isFound && *(itr) == word) {
@@ -661,7 +665,7 @@ public:
 			rowIter++;
 		}
 	}
-	iteratorPosition findNext(string word, vector<string>::iterator currentWord) {
+	iteratorPosition findNext(string word, const position& cursor) {
 		int rowIter = 0;
 		bool isFound = false;
 		iteratorPosition pos{};
@@ -670,7 +674,7 @@ public:
 		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end();lineItr++) {
 			int colIter = 0;
 			for (auto itr = lineItr->begin(); itr != lineItr->end(); itr++) {
-				if (itr == currentWord) {
+				if (rowIter==cursor.ri && colIter==cursor.ci) {
 					isFound = true;
 				}
 				if (isFound && *(itr) == word) {
@@ -813,8 +817,6 @@ public:
 	}
 	void processingLinePrint(list<vector<string>>::iterator line,int row)const
 	{
-		system("color f0");
-		system("cls");
 		gotoRowCol(row, 0);
 		SetClr(0, 15);
 		for (auto itr = line->begin(); itr != line->end(); itr++)
@@ -824,8 +826,6 @@ public:
 	}
 	void processingCleanLinePrint(list<vector<string>>::iterator line, int row)const
 	{
-		system("color f0");
-		system("cls");
 		gotoRowCol(row, 0);
 		SetClr(0, 15);
 		for (auto itr = line->begin(); itr != line->end(); itr++)
@@ -835,6 +835,11 @@ public:
 				cout << " ";
 			}
 		}
+	}
+	void processingCleanPrompt(int row)
+	{
+		gotoRowCol(row, 0);
+		cout << "                                                                                       " << endl;
 	}
 	void addPostfix(string findWord, string postWord) {
 		for (auto& line : dummyParagraph) {
@@ -946,26 +951,49 @@ public:
 			else if (currButtonPressed == 117)//U pressed Upper case word
 			{
 				toUpperWord(currentWord);
+				processingCleanLinePrint(dummyLineNumberV2, pRow);
 				processingLinePrint(dummyLineNumberV2,pRow);
 			}
 			else if (currButtonPressed == 21)//CTRL+U pressed Upper case letter
 			{
 				toUpperLetter(currentWord);
+				processingCleanLinePrint(dummyLineNumberV2, pRow);
 				processingLinePrint(dummyLineNumberV2, pRow);
 			}
 			else if (currButtonPressed == 108)//L pressed Lower case word
 			{
 				toLowerWord(currentWord);
+				processingCleanLinePrint(dummyLineNumberV2, pRow);
 				processingLinePrint(dummyLineNumberV2, pRow);
 			}
 			else if (currButtonPressed == 12)//CTRL+L pressed lower case letter
 			{
 				toLowerLetter(currentWord);
+				processingCleanLinePrint(dummyLineNumberV2, pRow);
 				processingLinePrint(dummyLineNumberV2, pRow);
 			}
 			else if (currButtonPressed == 102)// f pressed find next
 			{
-				findNext("meow", currentWord);
+				string word;
+				gotoRowCol(80, 0);
+				cout << "Enter word to find:" << endl;
+				cin >> word;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				auto itrPosition=findNext(word,position(pRow,pCol));
+				if (itrPosition.ri != -1)
+				{
+					pRow = itrPosition.ri;
+					pCol = itrPosition.ci;
+					currentWord = itrPosition.colIter;
+				}
+				else
+				{
+					gotoRowCol(80, 0);
+					cout << "No Such word was found. Press any key to continue" << endl;
+					_getch();
+					processingCleanPrompt(80);
+				}
 			}
 			gotoRowCol(pRow, pCol);
 		}
