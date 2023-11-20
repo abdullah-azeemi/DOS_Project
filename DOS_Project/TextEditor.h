@@ -861,6 +861,230 @@ public:
 			}
 		}
 	}
+
+	//replace from cursor
+	iteratorPosition replaceNext(string word, const position& cursor,string newWordToReplace) 
+	{
+		int rowIter = 0;
+		bool isFound = false;
+		iteratorPosition pos{};
+		pos.ri = -1;
+		pos.ci = -1;
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end();lineItr++) 
+		{
+			int colIter = 0;
+			for (auto itr = lineItr->begin(); itr != lineItr->end(); itr++) 
+			{
+				if (rowIter==cursor.ri && colIter==cursor.ci) {
+					isFound = true;
+				}
+				if (isFound && *(itr) == word) {
+					(*itr) = newWordToReplace;
+					pos.colIter = itr;
+					pos.ri = rowIter;
+					pos.ci = colIter;
+					return pos;
+				}
+				colIter = itr->size() + colIter;
+			}
+			rowIter++;
+		}
+		return pos;
+	}
+	vector<iteratorPosition> replaceNextAll(string word, const position& cursor,string newWordToReplace) {
+		int rowIter = 0;
+		bool isFound = false;
+		vector<iteratorPosition> ans;
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end(); lineItr++) {
+			int colIter = 0;
+			for (auto itr = lineItr->begin(); itr != lineItr->end(); itr++) {
+				if (rowIter == cursor.ri && colIter == cursor.ci) {
+					isFound = true;
+				}
+				if (isFound && *(itr) == word) {
+					iteratorPosition pos;
+					(*itr) = newWordToReplace;
+					pos.colIter = itr;
+					pos.ri = rowIter;
+					pos.ci = colIter;
+					ans.push_back(pos);
+				}
+				colIter = itr->size() + colIter;
+			}
+			rowIter++;
+		}
+		return ans;
+	}
+	void movementReplaceNextAll(string word, vector<string>::iterator& currentWord, int& pRow, int& pCol,string newWordToReplace)
+	{
+		auto items = replaceNextAll(word, position(pRow, pCol),newWordToReplace);
+		if (items.size() == 0)
+		{
+			gotoRowCol(80, 0);
+			cout << "No Such word was found after cursor. Press any key to continue" << endl;
+			_getch();
+			processingCleanPrompt(80);
+		}
+		else
+		{
+			printProcessing();
+			auto itr = items.begin();
+			pRow = itr->ri;
+			pCol = itr->ci;
+			currentWord = itr->colIter;
+			gotoRowCol(pRow, pCol);
+			int button;
+			while (itr != items.end())
+			{
+				button = _getch();
+				if (button == 224)//are arrow keys
+				{
+					button = _getch();
+					if (button == 75)//left
+					{
+						if (itr != items.begin())
+						{
+							itr--;
+							pRow = itr->ri;
+							pCol = itr->ci;
+							currentWord = itr->colIter;
+							gotoRowCol(pRow, pCol);
+						}
+					}
+					else if (button == 77)//right
+					{
+						if (itr != (--items.end()))
+						{
+							itr++;
+							pRow = itr->ri;
+							pCol = itr->ci;
+							currentWord = itr->colIter;
+							gotoRowCol(pRow, pCol);
+						}
+					}
+				}
+				else if (button == 27)//escape
+				{
+					break;
+				}
+			}
+		}
+	}
+	iteratorPosition replacePrev(string word, const position& cursor,string newWordToReplace)
+	{
+		int rowIter = 0;
+		vector<iteratorPosition> ans;
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end(); lineItr++) {
+			int colIter = 0;
+			for (auto itr = lineItr->begin(); itr != lineItr->end(); itr++) {
+				if (rowIter == cursor.ri && colIter == cursor.ci) {
+					if (ans.empty())
+					{
+						iteratorPosition p;
+						p.ci = -1;
+						p.ri = -1;
+						return p;
+					}
+					(*ans[ans.size() - 1].colIter) = newWordToReplace;
+					return ans[ans.size() - 1];
+				}
+				if (*(itr) == word) {
+					iteratorPosition pos;
+					pos.colIter = itr;
+					pos.ri = rowIter;
+					pos.ci = colIter;
+					ans.push_back(pos);
+				}
+				colIter = itr->size() + colIter;
+			}
+			rowIter++;
+		}
+		iteratorPosition dummy;
+		dummy.ri = -1;
+		dummy.ci = -1;
+		return dummy;
+	}
+	vector<iteratorPosition> replacePrevAll(string word, const position& cursor,string newWordToReplace) {
+		int rowIter = 0;
+		vector<iteratorPosition> ans;
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end(); lineItr++) {
+			int colIter = 0;
+			for (auto itr = lineItr->begin(); itr != lineItr->end(); itr++) {
+				if (rowIter == cursor.ri && colIter == cursor.ci)
+				{
+					reverse(ans.begin(), ans.end());
+					return ans;
+				}
+				if (*(itr) == word) {
+					iteratorPosition pos;
+					(*itr) = newWordToReplace;
+					pos.colIter = itr;
+					pos.ri = rowIter;
+					pos.ci = colIter;
+					ans.push_back(pos);
+				}
+				colIter = itr->size() + colIter;
+			}
+			rowIter++;
+		}
+		return ans;
+	}
+	void movementReplacePrevAll(string word, vector<string>::iterator& currentWord, int& pRow, int& pCol,string newWordToReplace)
+	{
+		auto items = replacePrevAll(word, position(pRow, pCol),newWordToReplace);
+		if (items.size() == 0)
+		{
+			gotoRowCol(80, 0);
+			cout << "No Such word was found Before Cursor. Press any key to continue" << endl;
+			_getch();
+			processingCleanPrompt(80);
+		}
+		else
+		{
+			printProcessing();
+			auto itr = items.begin();
+			pRow = itr->ri;
+			pCol = itr->ci;
+			currentWord = itr->colIter;
+			gotoRowCol(pRow, pCol);
+			int button;
+			while (itr != items.end())
+			{
+				button = _getch();
+				if (button == 224)//are arrow keys
+				{
+					button = _getch();
+					if (button == 75)//left
+					{
+						if (itr != (--items.end()))
+						{
+							itr++;
+							pRow = itr->ri;
+							pCol = itr->ci;
+							currentWord = itr->colIter;
+							gotoRowCol(pRow, pCol);
+						}
+					}
+					else if (button == 77)//right
+					{
+						if (itr != items.begin())
+						{
+							itr--;
+							pRow = itr->ri;
+							pCol = itr->ci;
+							currentWord = itr->colIter;
+							gotoRowCol(pRow, pCol);
+						}
+					}
+				}
+				else if (button == 27)//escape
+				{
+					break;
+				}
+			}
+		}
+	}
+	//replace from cursor end
 	int findSentence(string findSentence) {
 		int row = 0;
 		for (auto line : dummyParagraph) {
@@ -1005,13 +1229,7 @@ public:
 	{
 		gotoRowCol(row, 0);
 		SetClr(0, 15);
-		for (auto itr = line->begin(); itr != line->end(); itr++)
-		{
-			for (int i = 0; i < itr->size(); i++)
-			{
-				cout << " ";
-			}
-		}
+		cout << "                                                                                                                       ";
 	}
 	void processingCleanPrompt(int row)
 	{
@@ -1216,6 +1434,112 @@ public:
 				movementFindPrevAll(word, currentWord, pRow, pCol);
 				dummyLineNumberV2 = dummyParagraph.begin();
 				advance(dummyLineNumberV2, pRow);
+			}
+			else if (currButtonPressed == 114)// r pressed replace next
+			{
+				string word;
+				string replaceWord;
+				gotoRowCol(80, 0);
+				cout << "Enter word to find:" << endl;
+				cin >> word;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				gotoRowCol(80, 0);
+				cout << "Enter word to replace:" << endl;
+				cin >> replaceWord;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				auto itrPosition = replaceNext(word, position(pRow, pCol),replaceWord);
+				if (itrPosition.ri != -1)
+				{
+					pRow = itrPosition.ri;
+					pCol = itrPosition.ci;
+					currentWord = itrPosition.colIter;
+					//update line number as well
+					dummyLineNumberV2 = dummyParagraph.begin();
+					advance(dummyLineNumberV2, pRow);
+					processingCleanLinePrint(dummyLineNumberV2, pRow);
+					processingLinePrint(dummyLineNumberV2, pRow);
+				}
+				else
+				{
+					gotoRowCol(80, 0);
+					cout << "No Such word was found after cursor. Press any key to continue" << endl;
+					_getch();
+					processingCleanPrompt(80);
+				}
+			}
+			else if (currButtonPressed == 18)// Ctrl +r pressed replace next All
+			{
+				string word;
+				string newWord;
+				gotoRowCol(80, 0);
+				cout << "Enter word to find:" << endl;
+				cin >> word;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				gotoRowCol(80, 0);
+				cout << "Enter word to Replace:" << endl;
+				cin >> newWord;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				movementReplaceNextAll(word, currentWord, pRow, pCol,newWord);
+				dummyLineNumberV2 = dummyParagraph.begin();
+				advance(dummyLineNumberV2, pRow);
+				printProcessing();
+			}
+			else if (currButtonPressed == 101)// E pressed replace prev
+			{
+				string word;
+				string replaceWord;
+				gotoRowCol(80, 0);
+				cout << "Enter word to find:" << endl;
+				cin >> word;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				gotoRowCol(80, 0);
+				cout << "Enter word to replace:" << endl;
+				cin >> replaceWord;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				auto itrPosition = replacePrev(word, position(pRow, pCol), replaceWord);
+				if (itrPosition.ri != -1)
+				{
+					pRow = itrPosition.ri;
+					pCol = itrPosition.ci;
+					currentWord = itrPosition.colIter;
+					//update line number as well
+					dummyLineNumberV2 = dummyParagraph.begin();
+					advance(dummyLineNumberV2, pRow);
+					processingCleanLinePrint(dummyLineNumberV2, pRow);
+					processingLinePrint(dummyLineNumberV2, pRow);
+				}
+				else
+				{
+					gotoRowCol(80, 0);
+					cout << "No Such word was found Before cursor. Press any key to continue" << endl;
+					_getch();
+					processingCleanPrompt(80);
+				}
+			}
+			else if (currButtonPressed == 5)// Ctrl +E pressed replace prev All
+			{
+				string word;
+				string newWord;
+				gotoRowCol(80, 0);
+				cout << "Enter word to find:" << endl;
+				cin >> word;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				gotoRowCol(80, 0);
+				cout << "Enter word to Replace:" << endl;
+				cin >> newWord;
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+				movementReplacePrevAll(word, currentWord, pRow, pCol, newWord);
+				dummyLineNumberV2 = dummyParagraph.begin();
+				advance(dummyLineNumberV2, pRow);
+				printProcessing();
 			}
 			else if (currButtonPressed == 115)// S find sentence
 			{
