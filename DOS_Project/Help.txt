@@ -7,7 +7,7 @@ CD..		Change directory to previous directory
 CD\		Changes directory to root directory 
 CONVERT	    Asks two types and converts extension of all files of one type to another type.
 COPY	    Copies one file in the current directory to another location (directory).
-CREATE	    Creates a file with the name provided and allows the user to enter contents of the file.
+CREATE	    Creates a file with the name provided and allows the user to enter contents of the file. 
 DEL		Delete a file whose name is provided in input.
 DIR		Displays a list of files and subdirectories in a directory.
 EDIT	    Opens a file (loads into a linked list) and allows the user to edit

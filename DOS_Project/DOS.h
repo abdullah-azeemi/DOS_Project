@@ -33,11 +33,15 @@ struct file { //file
 	string extension;
 	dir* parent;
 	bool isHighPriority;
+	string password;
+	bool isProtected;
 
 	string getName() {
 		return txtName;
 	}
-	
+	string getPassword() {
+		return password;
+	}
 };
 struct CompareFiles {
 	bool operator()(const file* f1, const file* f2) const {
@@ -351,10 +355,10 @@ public:
 				Copy(argument[0],argument[1]);
 			}
 			else if (command == "CREATE") {
-				create(argument[0]);
+				create(argument[0],argument[1]);
 			}
 			else if (command == "EDIT") {
-				edit(argument[0]);
+				edit(argument[0],argument[1]);
 			}
 			else if (command == "MOVE") {
 				move(argument[0], argument[1]);
@@ -638,7 +642,7 @@ public:
 		}
 	}
 	// Command : CREATE
-	void create(string fName) {
+	void create(string fName, string _password = nullptr) {
 		auto fileIter = find_if(curr->files.begin(), curr->files.end(),
 			[fName](file* f) { return f->getName() == fName; });
 
@@ -657,21 +661,36 @@ public:
 				newFile->content.push_back(dummy);
 				dummy.clear();
 			}
+
+			if (!_password.empty()) {
+				newFile->isProtected = true;
+				newFile->password += _password;
+			}
 			curr->files.push_back(newFile);
 			fileNames.push_back(fName);
 			cout << "File created: " << curr->dirName << "\\" << fName << endl;
+
+			
 		}
 		else {
 			cout << "File already exists: " << curr->dirName << "\\" << fName << endl;
 		}
+
+		
 	}
 
 	//Command::EDIT
-	void edit(string fName) {
+	void edit(string fName, string _password = nullptr) {
 		auto fileIter = find_if(curr->files.begin(), curr->files.end(),
 			[fName](file* f) { return f->getName() == fName; });
-
+		
 		if (fileIter != curr->files.end()) {
+			
+			if ((*fileIter)->getPassword() != _password) {
+				cout << "Invalid Password ...... " << endl;
+				return;
+			}
+
 			(*fileIter)->creationTime = getTimeDate();
 			editor.editFile(fName,true);
 			string format = fName;
@@ -683,8 +702,10 @@ public:
 				getline(reader, dummy);
 				(*fileIter)->content.clear();
 				(*fileIter)->content.push_back(dummy);
+				
 				dummy.clear();
 			}
+			
 			cout << "File Edited: " << curr->dirName << "\\" << fName << endl;
 		}
 		else {
@@ -807,4 +828,3 @@ public:
 	}
 
 };
-
