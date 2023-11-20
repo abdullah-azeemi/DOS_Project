@@ -244,24 +244,7 @@ class DOS {
 		return path;
 	}
 
-	/*void encoding() {
-		
-
-
-	}
-	void encode(file * currentFile) {
-		vector<string> dummy;
-		for (const string& line : currentFile->content) {
-			string dummyWord = "";
-			for (auto word : line) {
-				for (auto letter : word) {
-
-				}
-			}
-			dummy.push_back(dummyWord);
-		}
-
-	}*/
+	
 
 
 public:
@@ -689,14 +672,47 @@ public:
 			fileNames.push_back(fName);
 			cout << "File created: " << curr->dirName << "\\" << fName << endl;
 
+			if (newFile->isProtected) {
+				encode(newFile, format);
+			}
+			cout << "File : '" << fName << "'  encoded... " << endl;
 			
 		}
 		else {
 			cout << "File already exists: " << curr->dirName << "\\" << fName << endl;
-		}
-
-		
+		}	
 	}
+	void encode(file * fileIter, string fName) {
+		ifstream rdr(fName);
+		vector<string>dummyContent;
+		while (rdr) {
+			string dummy = "";
+			getline(rdr, dummy);
+			for (int itr = 0; itr < dummy.size(); itr++) {
+				dummy[itr] = char(dummy[itr] + 10);
+			}
+			dummyContent.push_back(dummy);
+			dummy.clear();
+		}
+		ofstream wrt(fName);
+		for (int itr = 0; itr < dummyContent.size(); itr++) {
+			wrt << dummyContent[itr] << endl;
+		}
+	}
+	void decode(file* fileIter, string fName) {
+		ifstream rdr(fName);
+		fileIter->content.clear();
+		while (rdr) {
+			string dummy = "";
+			getline(rdr, dummy);
+			for (int itr = 0; itr < dummy.size(); itr++) {
+				dummy[itr] = char(dummy[itr] - 10);
+			}
+			fileIter->content.push_back(dummy);
+			dummy.clear();
+		}
+	}
+	
 
 	//Command::EDIT
 	void edit(string fName, string _password = nullptr) {
@@ -714,21 +730,28 @@ public:
 				return;
 			}
 
-			(*fileIter)->creationTime = getTimeDate();
-			editor.editFile(fName,true);
 			string format = fName;
 			format += ".txt";
+			(*fileIter)->creationTime = getTimeDate();
+			decode(*fileIter, format);
+			editor.editFile(fName,true);
 			ifstream reader(format);
-			while (reader)
-			{
-				string dummy = "";
-				getline(reader, dummy);
-				(*fileIter)->content.clear();
-				(*fileIter)->content.push_back(dummy);
-				
-				dummy.clear();
+			if ((*fileIter)->isProtected) {
+				encode(*fileIter, format);
+			}
+			else {
+				while (reader)
+				{
+					string dummy = "";
+					getline(reader, dummy);
+					(*fileIter)->content.clear();
+					(*fileIter)->content.push_back(dummy);
+
+					dummy.clear();
+				}
 			}
 			
+			cout << endl;
 			cout << "File Edited: " << curr->dirName << "\\" << fName << endl;
 		}
 		else {
