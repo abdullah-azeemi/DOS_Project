@@ -137,6 +137,7 @@
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="SHORTCUTS.txt" />
     <Text Include="Text.txt" />
     <Text Include="Help.txt" />
   </ItemGroup>

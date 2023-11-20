@@ -33,5 +33,8 @@
   <ItemGroup>
     <Text Include="Text.txt" />
     <Text Include="Help.txt" />
+    <Text Include="SHORTCUTS.txt">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

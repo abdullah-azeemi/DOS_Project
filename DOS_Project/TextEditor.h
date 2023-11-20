@@ -513,23 +513,7 @@ public:
 
 			else if (currButtonPressed == 19) { // Ctrl + S // testing processing functions here
 				//processingMode();
-				movementInProcessing();//for testing arrow keys
-				
-				saveContent();
-				bool x = false;
-				// Testing all form here //
-				vector<position> an = findWord("cat", x);
-				int w = findSentence("i am a very good cat");
-				position w1 = findSubword("ver");
-				int avg = averageWordlenght();
-				int sp = specialCharacters();
-				int sCount = noOfSentences();
-				printProcessing(an);
-				_getch();
-				addPrefix("cat", "meow");
-				printProcessing();
-				_getch();
-				saveContentreverse();
+				processingMode();//Processing Mode
 				
 			}
 
@@ -806,24 +790,30 @@ public:
 		return countSentences;
 	}
 	int largestWordlength() {
-		int maxWordlength = 0;
+		int maxWordLength = 0;
 		for (auto line : dummyParagraph) {
 			int colItr = 0;
 			for (auto word : line) {
-				max(maxWordlength, word.size());
+				if (!(isWordADelimiter(word)))
+				{
+					maxWordLength = max(maxWordLength, word.size());
+				}
 			}
 		}
-		return maxWordlength;
+		return maxWordLength;
 	}
-	int smallestWordlength() {
-		int minWordlength = 0;
+	int smallestWordLength() {
+		int minWordLength = INT_MAX;
 		for (auto line : dummyParagraph) {
 			int colItr = 0;
 			for (auto word : line) {
-				min(minWordlength, word.size());
+				if (!(isWordADelimiter(word)))
+				{
+					minWordLength = min(minWordLength, word.size());
+				}
 			}
 		}
-		return minWordlength;
+		return minWordLength;
 	}
 
 	position findSubword(string subword) {
@@ -1104,6 +1094,22 @@ public:
 			{
 				gotoRowCol(80, 0);
 				cout << "Special characters count:" << specialCharacters() << endl << "press any key to continue";
+				_getch();
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 109)//M maximum word length
+			{
+				gotoRowCol(80, 0);
+				cout << "Largest Word length:" << largestWordlength() << endl << "press any key to continue";
+				_getch();
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 13)//CTRL+M minimum word length
+			{
+				gotoRowCol(80, 0);
+				cout << "Smallest Word length:" << smallestWordLength() << endl << "press any key to continue";
 				_getch();
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
