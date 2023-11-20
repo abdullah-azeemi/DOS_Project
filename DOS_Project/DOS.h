@@ -650,7 +650,14 @@ public:
 
 		if (fileIter == curr->files.end()) {
 			file* newFile = new file{ fName, getTimeDate(), {}, "", curr };
-			editor.editFile(fName);
+			if (_password.empty())
+			{
+				editor.editFile(fName, false,false);
+			}
+			else
+			{
+				editor.editFile(fName, false,true);
+			}
 			displayHeader(Version, Credits);
 			cout << endl;
 			string format = fName;
@@ -734,7 +741,7 @@ public:
 			format += ".txt";
 			(*fileIter)->creationTime = getTimeDate();
 			decode(*fileIter, format);
-			editor.editFile(fName,true);
+			editor.editFile(fName,true,(*fileIter)->isProtected);
 			ifstream reader(format);
 			if ((*fileIter)->isProtected) {
 				encode(*fileIter, format);
