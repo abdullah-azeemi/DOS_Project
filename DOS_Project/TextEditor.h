@@ -532,6 +532,7 @@ public:
 					
 					word += *charItr;
 					words.push_back(word);
+					word.clear();
 					
 				}
 				
@@ -712,10 +713,6 @@ public:
 			}
 			colIter = 0;
 			rowIter++;
-			if (dummyDelimeters.size() - 1 >= rowIter) {
-				;
-				//cout << dummyDelimeters[rowIter];
-			}
 			cout << endl;
 			
 		}
