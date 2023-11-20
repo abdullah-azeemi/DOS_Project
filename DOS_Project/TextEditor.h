@@ -461,7 +461,7 @@ public:
 
 			else if (currButtonPressed == 19) { // Ctrl + S // testing processing functions here
 				//processingMode();
-				//movementInProcessing();for testing arrow keys
+				movementInProcessing();//for testing arrow keys
 				
 				saveContent();
 				bool x = false;
@@ -758,7 +758,6 @@ public:
 		saveContentreverse();
 	}
 
-
 	void movementInProcessing()//later will be placed in processing mode
 	{
 		saveContent();
@@ -794,16 +793,20 @@ public:
 					if (currentWord != (*dummyLineNumberV2).begin())
 					{
 						currentWord--;
-						pCol = pCol - (*currentWord).size() - 1;
+						pCol = pCol - (*currentWord).size();
 					}
 				}
 				else if (currButtonPressed == 77)//right
 				{
+					if (dummyLineNumberV2->begin() == dummyLineNumberV2->end())
+					{
+						continue;
+					}
 					if (currentWord != (--(*dummyLineNumberV2).end()))
 					{
 						int size = currentWord->size();
 						currentWord++;
-						pCol = pCol + size + 1;
+						pCol = pCol + size;
 					}
 				}
 				else if (currButtonPressed == 80)//Down
