@@ -669,6 +669,22 @@ public:
 			printProcessing(items);
 		}
 	}
+	void movementFindWordsCaseInsensitive(string word)
+	{
+		auto items = findWordInsensitive(word);
+		if (items.size() == 0)
+		{
+			gotoRowCol(80, 0);
+			cout << "No Such word was found. Press any key to continue" << endl;
+			_getch();
+			processingCleanPrompt(80);
+		}
+		else
+		{
+			//highlight
+			printProcessing(items);
+		}
+	}
 	vector<position> replaceWord(string findWord,string newWord) 
 	{
 		vector<position> ans;
@@ -1576,6 +1592,15 @@ public:
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
 			}
+			else if (currButtonPressed == 73) {
+				string word;
+				gotoRowCol(80, 0);
+				cout << "Enter word to find:" << endl;
+				cin >> word;
+				movementFindWordsCaseInsensitive(word);
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
 			else if (currButtonPressed == 102)// f pressed find next
 			{
 				string word;
@@ -1923,6 +1948,7 @@ public:
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
 			}
+			
 			gotoRowCol(pRow, pCol);
 		}
 

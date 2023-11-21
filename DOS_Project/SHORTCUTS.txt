@@ -4,6 +4,7 @@ UPPER CASE LETTER= CTRL+U (provide number index(1-Based)
 LOWER CASE WORD=L
 LOWER CASE LETTER=CTRL+L(provide number index(1-Based)
 Find word (Highlight case sensitive)= SHIFT+f
+Find word (Highlight case insensitive) = SHIFt+i
 FIND NEXT From Current Cursor=f
 FIND NEXT ALL From Current Cursor=CTRL+f(use arrow keys to move left or right, press escape to leave)
 FIND PREV From Current Cursor=d
