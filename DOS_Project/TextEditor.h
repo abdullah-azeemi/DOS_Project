@@ -1658,9 +1658,7 @@ public:
 			else if (currButtonPressed == 115)// S find sentence
 			{
 				string sentence;
-				gotoRowCol(79, 0);//TODO DELETE THIS
-				cout << "Abdullah ye kiya kiiya hoa tune bhai thek kr, sentence highlight ho pura" << endl;
-				gotoRowCol(80, 0);
+				gotoRowCol(79, 0);
 				cout << "Enter sentence to find:" << endl;
 				getline(cin, sentence);
 				auto itrPosition = findSentence(sentence, position(pRow, pCol));
