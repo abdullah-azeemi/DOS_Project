@@ -98,7 +98,6 @@ class textEditor
 		}
 		gotoRowCol(cursorRow, cursorCol);
 	}
-
 	void displayLine(const list<char>& line, int clr = 0)const
 	{
 		clean(cursorRow);
@@ -110,7 +109,6 @@ class textEditor
 		}
 		gotoRowCol(cursorRow, cursorCol);
 	}
-
 	void displayParagraph()
 	{
 		system("cls");
@@ -125,16 +123,13 @@ class textEditor
 		gotoRowCol(cursorRow, cursorCol);
 	}
 
-
 	//splicing helper,sets iterator accordingly
-
 	void spliceHelper(list<char>& sender, list<char>& receiver, const int& combineAt)
 	{
 		auto itr = sender.begin();
 		advance(itr, combineAt);
 		receiver.splice(receiver.begin(), sender, itr, sender.end());
 	}
-
 	void emptyRedoQueue()
 	{
 		redo.clear();
@@ -158,7 +153,6 @@ class textEditor
 		}
 		this->deleteParagraph();
 	}
-
 	void loadFile(string fileName,bool isEncoded)
 	{
 		currOpenedFile = openedFiles.end();
@@ -198,7 +192,6 @@ class textEditor
 		displayParagraph();
 		gotoRowCol(cursorRow, cursorCol);
 	}
-
 	void switchFiles()//to allow opening multiple files
 	{
 		if (this->openedFiles.size() == 1)
@@ -213,7 +206,6 @@ class textEditor
 	}
 
 	//VIM FUNCTIONS
-
 	bool compare(int rowIter, int colIter, vector<position> selectedPos) {
 		for (int ri = 0; ri < selectedPos.size(); ri++) {
 			if (rowIter == selectedPos[ri].ri && colIter == selectedPos[ri].ci) {
@@ -222,7 +214,6 @@ class textEditor
 		}
 		return false;
 	}
-
 	bool isWordADelimiter(const string& word)const
 	{
 		if (word.size() != 1)
@@ -237,14 +228,12 @@ class textEditor
 		}
 		return false;
 	}
-
 	void toUpperWord(vector<string>::iterator& word)
 	{
 		string toUp = (*word);
 		std::for_each(toUp.begin(), toUp.end(), [](char& ch) {ch = std::toupper(ch); });
 		(*word) = toUp;
 	}
-
 	void toLowerWord(vector<string>::iterator& word)
 	{
 		string toLow = (*word);
@@ -282,16 +271,12 @@ class textEditor
 		(*word) = toLow;
 	}
 
-
 public:
-
-
 
 	textEditor() :paragraph({ list<char>() }), cursorRow(0), cursorCol(0)
 	{
 		lineNumber = paragraph.begin();
 	}
-
 	void editFile(string fileName, bool load = false, bool isEncoded = false)
 	{
 		this->openedFiles.push_back(fileName);//add name to opened files
@@ -547,7 +532,6 @@ public:
 			gotoRowCol(cursorRow, cursorCol);//for arrows
 		}
 	}
-
 	// form editing to processing
 	void saveContent() {
 
@@ -606,7 +590,6 @@ public:
 		}
 	}
 
-
 	// Processing Mode functions ----------------//
 	// caseSensitive
 	vector<position> findWord(string findWord) {
@@ -652,6 +635,28 @@ public:
 		}
 		return ans;
 	}
+	vector<position> findSubword(string subword, int & length) {
+		vector<position> ans;
+		position ans1{ -1,-1 };
+		int row = 0;
+		for (auto line : dummyParagraph) {
+			int col = 0;
+			for (auto word : line) {
+				size_t found = word.find(subword);
+				if (found != string::npos) {
+					ans1 = { row,col };
+					ans.push_back(ans1);
+					length = word.size() - subword.size();
+					return ans;
+				}
+				col++;
+			}
+			row++;
+		}
+		ans.push_back(ans1);
+		return ans;
+	}
+	
 
 	void movementFindWordsCaseSensitive(string word)
 	{
@@ -683,6 +688,22 @@ public:
 		{
 			//highlight
 			printProcessing(items);
+		}
+	}
+	void movementFindsubWords(string word) {
+		int length = 0;
+		auto items = findSubword(word, length);
+		if (items.size() == 0)
+		{
+			gotoRowCol(80, 0);
+			cout << "No Such word was found. Press any key to continue" << endl;
+			_getch();
+			processingCleanPrompt(80);
+		}
+		else
+		{
+			//highlight
+			highlightSubword(items[0],word.length(), length,word);
 		}
 	}
 	vector<position> replaceWord(string findWord,string newWord) 
@@ -1181,7 +1202,6 @@ public:
 		}
 		return -1;
 	}
-
 	iteratorPosition findSentence(const string& findSentence, const position& cursor)
 	{
 		iteratorPosition pos{};
@@ -1216,6 +1236,24 @@ public:
 
 		return pos;
 	}
+	position findSubword2(string subword) {
+		position ans{ -1,-1 };
+		int row = 0;
+		for (auto line : dummyParagraph) {
+			int col = 0;
+			for (auto word : line) {
+				size_t found = word.find(subword);
+				if (found != string::npos) {
+					ans = { row,col };
+					return ans;
+				}
+				col++;
+			}
+			row++;
+		}
+		return ans;
+	}
+
 
 	int averageWordlenght() {
 		int words = 0, letters = 0;
@@ -1246,7 +1284,6 @@ public:
 		}
 		return count;
 	}
-
 	int largestWordlength() {
 		int maxWordLength = 0;
 		for (auto line : dummyParagraph) {
@@ -1274,23 +1311,6 @@ public:
 		return minWordLength;
 	}
 
-	position findSubword(string subword) {
-		position ans{ -1,-1 };
-		int row = 0;
-		for (auto line : dummyParagraph) {
-			int col = 0;
-			for (auto word : line) {
-				size_t found = word.find(subword);
-				if (found != string::npos) {
-					ans = { row,col };
-					return ans;
-				}
-				col++;
-			}
-			row++;
-		}
-		return ans;
-	}
 	int specialCharacters() {
 		int count = 0;
 		for (auto line : dummyParagraph) {
@@ -1363,6 +1383,7 @@ public:
 	// findWord Next 
 	
 
+	// Prinitng functions
 	void printProcessing(vector<position> selectedPos = {}) {
 		system("color f0");
 		system("cls");
@@ -1407,6 +1428,30 @@ public:
 		gotoRowCol(row, 0);
 		cout << "                                                                                                                                                                " << endl;
 	}
+	void highlightSubword(const position& startPos, int subwordLength, int skipLength, string subWord) {
+		int rowIter = 0;
+		auto lineItr = dummyParagraph.begin();
+		advance(lineItr, startPos.ri);
+
+		while (rowIter < startPos.ri) {
+			rowIter++;
+			lineItr++;
+		}
+
+		int colIter = 0;
+		auto colItr = lineItr->begin();
+		advance(colItr, startPos.ci);
+		gotoRowCol(startPos.ri, startPos.ci+skipLength);
+		SetClr(5, 15);
+		cout << subWord;
+		/*for (int i = 0; i < subwordLength; i++) {
+			cout << *colItr;
+			colIter++;
+		}*/
+		SetClr(15, 0);
+	}
+
+
 	void addPostfix(string findWord, string postWord) {
 		for (auto& line : dummyParagraph) {
 			int colItr = 0;
@@ -1426,6 +1471,7 @@ public:
 			}
 		}
 	}
+
 
 	//WORD GAME
 	bool canBeMade(const set<char>& main, const set<char>& sub)const
@@ -1592,12 +1638,21 @@ public:
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
 			}
-			else if (currButtonPressed == 73) {
+			else if (currButtonPressed == 73) {//Shift+i find word Highlight case inSensitive
 				string word;
 				gotoRowCol(80, 0);
 				cout << "Enter word to find:" << endl;
 				cin >> word;
 				movementFindWordsCaseInsensitive(word);
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 79) {//Shift+o find subWord
+				string word;
+				gotoRowCol(80, 0);
+				cout << "Enter Sub word to find:" << endl;
+				cin >> word;
+				movementFindsubWords(word);
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
 			}
@@ -1822,8 +1877,7 @@ public:
 					auto colIter = lineItr->begin();
 					advance(colIter, colIndex);
 
-					while (colIter != lineItr->end())
-					{
+					while (colIter != lineItr->end()){
 						cout << *colIter;
 						++colIter;
 					}
@@ -1845,7 +1899,7 @@ public:
 				gotoRowCol(80, 0);
 				cout << "Enter subString to find:" << endl;
 				cin >> subString;
-				position x=findSubword(subString);
+				position x=findSubword2(subString);
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
 			}
