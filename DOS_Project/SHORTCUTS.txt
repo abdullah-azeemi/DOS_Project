@@ -18,6 +18,7 @@ FIND SUBSTRING=CTRL+s(not highlighting using return position)
 AVERAGE WORD LENGTH=a
 SPECIAL CHARACTER COUNT=SHIFT+A
 TOTAL SENTENCES COUNT=CTRL+A (ALSO NOT WORKING CORRECTLY)
+COUNT PARAGRAPHS=C(Press any button to return)
 PREFIX=P(first enter word then prefix)
 POSTFIX=CTRL+P (first enter word then postfix)
 WORDGAME=W(Press any key to return)

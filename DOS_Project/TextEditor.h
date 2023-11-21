@@ -1284,7 +1284,28 @@ public:
 		}
 		return count;
 	}
-
+	int countParagraphs()const
+	{
+		int num = 0;
+		bool hasStarted = false;
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end(); lineItr++)
+		{
+			if (!(lineItr->empty()))
+			{
+				hasStarted = true;
+			}
+			if (lineItr->empty() && hasStarted)
+			{
+				num++;
+				hasStarted = false;
+			}
+		}
+		if (hasStarted)
+		{
+			num++;
+		}
+		return num;
+	}
 	// findWord Next 
 	
 
@@ -1777,6 +1798,14 @@ public:
 			{
 				gotoRowCol(80, 0);
 				cout << "Special characters count:" << specialCharacters() << endl << "press any key to continue";
+				_getch();
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 99)//C count paragraphs
+			{
+				gotoRowCol(80, 0);
+				cout << "Paragraph count:" << countParagraphs() << endl << "press any key to continue";
 				_getch();
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
