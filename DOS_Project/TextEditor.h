@@ -1205,26 +1205,30 @@ public:
 		int words = 0, letters = 0;
 		for (auto line : dummyParagraph) {
 			for (auto word : line) {
-				if(!(isWordADelimiter(word)))
-				letters += word.size();
-				words++;
+				if (!(isWordADelimiter(word)))
+				{
+					letters += word.size();
+					words++;
+				}
 			}
 		}
 		return letters / words;
 
 	}
-	int noOfSentences() {
-		int countSentences = 0;
+	int countSentences() 
+	{
+		vector<char> stoppers{ '.', '?', '!', ';'};
+		int count = 0;
 		for (auto line : dummyParagraph) {
 			for (auto word : line) {
 				for (auto ch : word) {
-					if (std::ranges::find(delimeters, ch) != delimeters.end()) {
-						countSentences++;
+					if (std::ranges::find(stoppers, ch) != stoppers.end()) {
+						count++;
 					}
 				}
 			}
 		}
-		return countSentences;
+		return count;
 	}
 
 	int largestWordlength() {
@@ -1871,7 +1875,7 @@ public:
 			else if (currButtonPressed == 1)//CTRL+A total sentences count
 			{
 				gotoRowCol(80, 0);
-				cout << "Total sentences:" << noOfSentences() << endl << "press any key to continue";
+				cout << "Total sentences:" << countSentences() << endl << "press any key to continue";
 				_getch();
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
