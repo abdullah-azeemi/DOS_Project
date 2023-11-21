@@ -1306,6 +1306,40 @@ public:
 		}
 		return num;
 	}
+	int findLargestParagraphSize()const
+	{
+		int num = 0;
+		int maxNum = -1;
+		bool hasStarted = false;
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end(); lineItr++)
+		{
+			if (!(lineItr->empty()))
+			{
+				hasStarted = true;
+			}
+			if (lineItr->empty() && hasStarted)
+			{
+				maxNum = max(maxNum, num);
+				num = 0;
+				hasStarted = false;
+			}
+			if (hasStarted)
+			{
+				for (auto itr = lineItr->begin(); itr != lineItr->end(); itr++)
+				{
+					if (!(isWordADelimiter((*itr))))
+					{
+						num++;
+					}
+				}
+			}
+		}
+		if (hasStarted)
+		{
+			maxNum = max(maxNum, num);
+		}
+		return maxNum;
+	}
 	// findWord Next 
 	
 
@@ -1806,6 +1840,14 @@ public:
 			{
 				gotoRowCol(80, 0);
 				cout << "Paragraph count:" << countParagraphs() << endl << "press any key to continue";
+				_getch();
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 3)//CTRL+C count largest paragraph length
+			{
+				gotoRowCol(80, 0);
+				cout << "Largest Paragraph length:" <<findLargestParagraphSize() <<" words"<< endl << "press any key to continue";
 				_getch();
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
