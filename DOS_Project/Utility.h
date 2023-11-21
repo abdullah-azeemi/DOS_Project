@@ -51,7 +51,7 @@ static void getRowColbyLeftClick(int& rpos, int& cpos)
 		}
 	} while (true);
 }
-static void gotoRowCol(int rpos, int cpos)
+inline void gotoRowCol(int rpos, int cpos)
 {
 	COORD scrn;
 	HANDLE hOuput = GetStdHandle(STD_OUTPUT_HANDLE);

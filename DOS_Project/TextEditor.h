@@ -1145,7 +1145,7 @@ public:
 		}
 	}
 	//replace from cursor end
-	int findSentence(string findSentence) {
+	int findSentence2(string findSentence) {
 		int row = 0;
 		for (auto line : dummyParagraph) {
 			string sentence;
@@ -1164,6 +1164,42 @@ public:
 		}
 		return -1;
 	}
+
+	iteratorPosition findSentence(const string& findSentence, const position& cursor)
+	{
+		iteratorPosition pos{};
+		pos.ri = -1;
+		pos.ci = -1;
+
+		bool isFound = false;
+		auto lineItr = dummyParagraph.begin();
+		advance(lineItr, cursor.ri);
+
+		int rowIter = 0;
+		for (; lineItr != dummyParagraph.end(); ++lineItr){
+			int colIter = 0;
+			for (auto itr = lineItr->begin(); itr != lineItr->end(); ++itr){
+				string sentence;
+				for (const auto& word : *lineItr){
+					sentence += word;
+				}
+				if (sentence == findSentence){
+					pos.colIter = itr;
+					pos.ri = rowIter;
+					pos.ci = colIter;
+					return pos;
+				}
+
+				colIter += itr->size() + 1; 
+			}
+			colIter = 0;
+			rowIter++;
+			pos.ri++; 
+		}
+
+		return pos;
+	}
+
 	int averageWordlenght() {
 		int words = 0, letters = 0;
 		for (auto line : dummyParagraph) {
@@ -1482,7 +1518,7 @@ public:
 					_getch();
 					processingCleanPrompt(80);
 				}
-				}
+			}
 			else if (currButtonPressed == 4)// Ctrl +D pressed find prev All
 			{
 				string word;
@@ -1626,7 +1662,36 @@ public:
 				cout << "Abdullah ye kiya kiiya hoa tune bhai thek kr, sentence highlight ho pura" << endl;
 				gotoRowCol(80, 0);
 				cout << "Enter sentence to find:" << endl;
-				cin >> sentence;
+				getline(cin, sentence);
+				auto itrPosition = findSentence(sentence, position(pRow, pCol));
+				auto lineItr = dummyParagraph.begin();
+				advance(lineItr, itrPosition.ri);
+				if (itrPosition.ri != -1) {
+					pRow = itrPosition.ri;
+					pCol = itrPosition.ci;
+
+					displayParagraph();
+					gotoRowCol(pRow, pCol);
+					SetClr(5, 15); 
+
+					auto colIndex = itrPosition.ci;
+					auto colIter = lineItr->begin();
+					advance(colIter, colIndex);
+
+					while (colIter != lineItr->end())
+					{
+						cout << *colIter;
+						++colIter;
+					}
+					SetClr(15, 0);
+				}
+				else {
+					gotoRowCol(80, 0);
+					cout << "No Such word was found before cursor. Press any key to continue" << endl;
+					_getch();
+					processingCleanPrompt(80);
+				}
+				
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
 			}
@@ -1719,4 +1784,4 @@ public:
 
 	}
 };
- 
+
