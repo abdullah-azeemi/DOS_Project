@@ -626,6 +626,32 @@ public:
 		}
 		return ans;
 	}
+	vector<position> findWordInsensitive(string findWord) {
+		std::for_each(findWord.begin(), findWord.end(), [](char& ch) {
+			ch = std::tolower(ch); });
+		vector<position> ans;
+		int rowItr = 0;
+		for (auto line : dummyParagraph) {
+			int colItr = 0;
+			for (auto word : line) {
+				string dummyWord;
+				dummyWord.append(word);
+				std::for_each(dummyWord.begin(), dummyWord.end(), [](char& ch) {
+					ch = std::tolower(ch); });
+
+				if (dummyWord == findWord) {
+					position pos;
+					pos.ri = rowItr;
+					pos.ci = colItr;
+					ans.push_back(pos);
+				}
+				colItr += word.size();
+			}
+			rowItr++;
+		}
+		return ans;
+	}
+
 	void movementFindWordsCaseSensitive(string word)
 	{
 		auto items = findWord(word);
