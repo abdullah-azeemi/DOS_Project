@@ -635,7 +635,7 @@ public:
 		}
 		return ans;
 	}
-	vector<position> findSubword(string subword, int & length) {
+	vector<position> findSubword(string & orignalWord,string subword) {
 		vector<position> ans;
 		position ans1{ -1,-1 };
 		int row = 0;
@@ -646,10 +646,10 @@ public:
 				if (found != string::npos) {
 					ans1 = { row,col };
 					ans.push_back(ans1);
-					length = word.size() - subword.size();
+					orignalWord.append(word);
 					return ans;
 				}
-				col++;
+				col = col + word.size();
 			}
 			row++;
 		}
@@ -691,8 +691,8 @@ public:
 		}
 	}
 	void movementFindsubWords(string word) {
-		int length = 0;
-		auto items = findSubword(word, length);
+		string orignalWord;
+		auto items = findSubword(orignalWord,word);
 		if (items.size() == 0)
 		{
 			gotoRowCol(80, 0);
@@ -700,10 +700,9 @@ public:
 			_getch();
 			processingCleanPrompt(80);
 		}
-		else
-		{
+		else{
 			//highlight
-			highlightSubword(items[0],word.length(), length,word);
+			highlightSubword(items[0],orignalWord, word);
 		}
 	}
 	vector<position> replaceWord(string findWord,string newWord) 
@@ -1182,6 +1181,7 @@ public:
 			}
 		}
 	}
+	
 	//replace from cursor end
 	int findSentence2(string findSentence) {
 		int row = 0;
@@ -1428,26 +1428,17 @@ public:
 		gotoRowCol(row, 0);
 		cout << "                                                                                                                                                                " << endl;
 	}
-	void highlightSubword(const position& startPos, int subwordLength, int skipLength, string subWord) {
-		int rowIter = 0;
-		auto lineItr = dummyParagraph.begin();
-		advance(lineItr, startPos.ri);
-
-		while (rowIter < startPos.ri) {
-			rowIter++;
-			lineItr++;
-		}
-
-		int colIter = 0;
-		auto colItr = lineItr->begin();
-		advance(colItr, startPos.ci);
-		gotoRowCol(startPos.ri, startPos.ci+skipLength);
+	void highlightSubword(const position& startPos, string word, string subWord) {
+		
+		int startItr = 0;
 		SetClr(5, 15);
-		cout << subWord;
-		/*for (int i = 0; i < subwordLength; i++) {
-			cout << *colItr;
-			colIter++;
-		}*/
+		for (int ri = 0; ri < word.length(); ri++){
+			gotoRowCol(startPos.ri, startPos.ci+ri);
+			if (word[ri] == subWord[startItr]) {
+				cout << subWord[startItr];
+				startItr++;
+			}
+		}
 		SetClr(15, 0);
 	}
 
