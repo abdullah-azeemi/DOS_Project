@@ -1310,6 +1310,19 @@ public:
 		}
 		return minWordLength;
 	}
+	int countSubstrings(const string& subword) {
+		int count = 0;
+		for (const auto& line : dummyParagraph) {
+			for (const auto& word : line) {
+				size_t found = word.find(subword);
+				while (found != string::npos) {
+					count++;
+					found = word.find(subword, found + 1);
+				}
+			}
+		}
+		return count;
+	}
 
 	int specialCharacters() {
 		int count = 0;
@@ -1989,6 +2002,19 @@ public:
 				gotoRowCol(80, 0);
 				cout << "Word Game Largest Domain Word:" << endl;
 				cout << wordGame();
+				_getch();
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 89)// SHIFT+y  subString count
+			{
+				string subString;
+				gotoRowCol(79, 0);
+				cout << "Enter the SubString : ";
+				cin >> subString;
+				gotoRowCol(80, 0);
+				cout << "Substring Count is :" << countSubstrings(subString) <<endl;
+				cout << "press any key to continue" << endl;
 				_getch();
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
