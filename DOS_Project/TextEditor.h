@@ -1215,18 +1215,17 @@ public:
 	int noOfSentences() {
 		int countSentences = 0;
 		for (auto line : dummyParagraph) {
-			string sentence;
 			for (auto word : line) {
-				sentence += word;
-				sentence += " ";
+				for (auto ch : word) {
+					if (std::ranges::find(delimeters, ch) != delimeters.end()) {
+						countSentences++;
+					}
+				}
 			}
-			if (!sentence.empty()) {
-				sentence.pop_back();
-			}
-			countSentences++;
 		}
 		return countSentences;
 	}
+
 	int largestWordlength() {
 		int maxWordLength = 0;
 		for (auto line : dummyParagraph) {
