@@ -15,6 +15,7 @@
 #include<ranges>
 #include<iterator>
 #include<filesystem>
+#include<set>
 #include<queue>
 
 #define _CRT_SECURE_NO_WARNINGS // suppresing for ctime warning

@@ -20,6 +20,7 @@ SPECIAL CHARACTER COUNT=SHIFT+A
 TOTAL SENTENCES COUNT=CTRL+A (ALSO NOT WORKING CORRECTLY)
 PREFIX=P(first enter word then prefix)
 POSTFIX=CTRL+P (first enter word then postfix)
+WORDGAME=W(Press any key to return)
 Largest Word Length=m
 smallest Word Length=CTRL+m
 Return to Insertion=Escape

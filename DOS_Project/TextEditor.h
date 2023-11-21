@@ -22,7 +22,7 @@ class textEditor
 	int cursorCol;
 
 	// Delimeters
-	vector<char> delimeters{ ' ', ',', '.', '?', '!', '/', ';' };
+	vector<char> delimeters{ ' ', ',', '.', '?', '!', '/', ';',':'};
 
 	struct textState
 	{
@@ -223,7 +223,7 @@ class textEditor
 		return false;
 	}
 
-	bool isWordADelimiter(const string& word)
+	bool isWordADelimiter(const string& word)const
 	{
 		if (word.size() != 1)
 		{
@@ -563,7 +563,8 @@ public:
 			for (auto charItr = itr.begin(); charItr != itr.end(); ++charItr) {
 				if (std::ranges::find(delimeters, *charItr) != delimeters.end()) {
 					dummyDelimeters.push_back(*charItr);
-					words.push_back(word);
+					if(word.empty()==false)
+						words.push_back(word);
 					word.clear();
 					
 					word += *charItr;
@@ -1351,6 +1352,68 @@ public:
 		}
 	}
 
+	//WORD GAME
+	bool canBeMade(const set<char>& main, const set<char>& sub)const
+	{
+		for (auto itr = sub.begin(); itr != sub.end(); itr++)
+		{
+			auto find = main.find((*itr));
+			if (find == main.end())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	set<char> convertWordToChar(const string& word)const
+	{
+		set<char>s;
+		for (int i = 0; i < word.size(); i++)
+		{
+			s.insert(word[i]);
+		}
+		return s;
+	}
+	int calculateWordsMade(const string& word)const
+	{
+		set<char>main = convertWordToChar(word);
+		int count = 0;
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end(); lineItr++)
+		{
+			for (auto colItr = (*lineItr).begin(); colItr != (*lineItr).end(); colItr++)
+			{
+				if (isWordADelimiter(*colItr))
+				{
+					continue;
+				}
+				set<char>sub = convertWordToChar(*colItr);
+				if (canBeMade(main, sub))
+				{
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+	string wordGame()const
+	{
+		string word = "-";
+		int wordsMadeMax = 0;
+		for (auto lineItr = dummyParagraph.begin(); lineItr != dummyParagraph.end(); lineItr++)
+		{
+			for (auto colItr = (*lineItr).begin(); colItr != (*lineItr).end(); colItr++)
+			{
+				int wordsMade = 0;
+				wordsMade = calculateWordsMade((*colItr));
+				if (wordsMade > wordsMadeMax)
+				{
+					wordsMadeMax = wordsMade;
+					word = (*colItr);
+				}
+			}
+		}
+		return word;
+	}
 	//Processing Mode
 	void processingMode()
 	{
@@ -1775,6 +1838,15 @@ public:
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
 				printProcessing();
+			}
+			else if (currButtonPressed == 119)//word game
+			{
+				gotoRowCol(80, 0);
+				cout << "Word Game Largest Domain Word:" << endl;
+				cout << wordGame();
+				_getch();
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
 			}
 			gotoRowCol(pRow, pCol);
 		}
