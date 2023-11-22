@@ -1237,7 +1237,7 @@ public:
 	void printFindSentence(const position& startPos, const string sentence) {
 		int startItr = 0;
 		SetClr(5, 15);
-		gotoRowCol(startPos.ri, startPos.ci + 2);
+		gotoRowCol(startPos.ri, startPos.ci);
 		for (int ri = 0; ri < sentence.size(); ri++) {
 			cout << sentence[ri];
 		}
@@ -1904,50 +1904,13 @@ public:
 				advance(dummyLineNumberV2, pRow);
 				printProcessing();
 			}
-			else if (currButtonPressed == 115)// S find sentence
-			{
-				/*string sentence;
-				gotoRowCol(79, 0);
-				cout << "Enter sentence to find:" << endl;
-				getline(cin, sentence);
-				auto itrPosition = findSentence(sentence, position(pRow, pCol));
-				auto lineItr = dummyParagraph.begin();
-				advance(lineItr, itrPosition.ri);
-				if (itrPosition.ri != -1) {
-					pRow = itrPosition.ri;
-					pCol = itrPosition.ci;
-
-					displayParagraph();
-					gotoRowCol(pRow, pCol);
-					SetClr(5, 15); 
-
-					auto colIndex = itrPosition.ci;
-					auto colIter = lineItr->begin();
-					advance(colIter, colIndex);
-
-					while (colIter != lineItr->end()){
-						cout << *colIter;
-						++colIter;
-					}
-					SetClr(15, 0);
-				}
-				else {
-					gotoRowCol(80, 0);
-					cout << "No Such word was found before cursor. Press any key to continue" << endl;
-					_getch();
-					processingCleanPrompt(80);
-				}
-				
-				processingCleanPrompt(80);
-				processingCleanPrompt(81);*/
-			}
 			else if (currButtonPressed == 19)// CTRL+S find SUBSTRING
 			{
 				string subString;
 				gotoRowCol(80, 0);
 				cout << "Enter subString to find:" << endl;
 				cin >> subString;
-				position x=findSubword2(subString);
+				movementFindsubWords(subString);
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
 			}
