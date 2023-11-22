@@ -1244,6 +1244,7 @@ public:
 		SetClr(0, 15);
 	}
 
+
 	int averageWordlenght() {
 		int words = 0, letters = 0;
 		for (auto line : dummyParagraph) {
