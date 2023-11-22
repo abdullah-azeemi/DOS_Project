@@ -1452,7 +1452,7 @@ public:
 				startItr++;
 			}
 		}
-		SetClr(15, 0);
+		SetClr(0, 15);
 	}
 
 
