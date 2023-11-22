@@ -23,6 +23,7 @@ TOTAL SENTENCES COUNT=CTRL+A (press any button to return)
 COUNT PARAGRAPHS=C(Press any button to return)
 COUNT LENGTH OF LARGEST PARAGRAPH=CTRL+C(Press any button to return)
 COUNT SUBSTIRNGS= SHIFt+y
+MERGE FILE=TAB (Enter file name. if not valid press any key to return)
 PREFIX=P(first enter word then prefix)
 POSTFIX=CTRL+P (first enter word then postfix)
 WORDGAME=W(Press any key to return)

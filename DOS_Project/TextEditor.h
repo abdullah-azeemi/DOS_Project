@@ -138,9 +138,9 @@ class textEditor
 	void saveFileExit(string fileName)
 	{
 		//erase from opened files
-		auto itr = find(openedFiles.begin(), openedFiles.end(), fileName);
-		openedFiles.erase(itr);
-		currOpenedFile = openedFiles.begin();
+		//auto itr = find(openedFiles.begin(), openedFiles.end(), fileName);
+		//openedFiles.erase(itr);
+		//currOpenedFile = openedFiles.begin();
 		fileName += ".txt";
 		ofstream writeBack(fileName);
 		for (auto rItr = paragraph.begin(); rItr != paragraph.end(); rItr++)
@@ -155,8 +155,8 @@ class textEditor
 	}
 	void loadFile(string fileName,bool isEncoded)
 	{
-		currOpenedFile = openedFiles.end();
-		currOpenedFile--;
+		//currOpenedFile = openedFiles.end();
+		//currOpenedFile--;
 		string format = fileName;
 		format += ".txt";
 		bool isFirst = true;
@@ -279,7 +279,7 @@ public:
 	}
 	void editFile(string fileName, bool load = false, bool isEncoded = false)
 	{
-		this->openedFiles.push_back(fileName);//add name to opened files
+		//this->openedFiles.push_back(fileName);//add name to opened files
 		//set color to white
 		system("color f0");
 		system("cls");
@@ -1539,6 +1539,60 @@ public:
 		}
 		return word;
 	}
+
+
+
+	//MERGE FILE
+	void mergeFile()
+	{
+		string format;
+		gotoRowCol(80, 0);
+		cout << "Enter FileName to Merge Into This " << endl;;
+		cin >> format;
+		processingCleanPrompt(80);
+		processingCleanPrompt(81);
+		format += ".txt";
+		ifstream rdr(format);
+		if (!rdr)
+		{
+			gotoRowCol(80, 0);
+			cout << "No Such File Was Found. Press Any Key To Continue";
+			_getch();
+			processingCleanPrompt(80);
+			return;
+		}
+		string dummy = "";
+		vector<string> line;
+		while (getline(rdr,dummy))
+		{
+			string word = "";
+			for (int i = 0; i < dummy.size(); i++)
+			{
+				char c = dummy[i];
+				if (std::ranges::find(delimeters, c) != delimeters.end())
+				{
+					if (!word.empty())
+					{
+						line.push_back(word);
+					}
+					word.clear();
+					word += c;
+					line.push_back(word);
+					word.clear();
+				}
+				else
+				{
+					word += c;
+				}
+
+			}
+			if (word.empty() == false)
+				line.push_back(word);
+			dummyParagraph.push_back(line);
+			line.clear();
+		}
+		printProcessing();
+	}
 	//Processing Mode
 	void processingMode()
 	{
@@ -2019,7 +2073,10 @@ public:
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
 			}
-			
+			else if (currButtonPressed == 9)// TAB  MERGE
+			{
+				mergeFile();
+			}
 			gotoRowCol(pRow, pCol);
 		}
 
