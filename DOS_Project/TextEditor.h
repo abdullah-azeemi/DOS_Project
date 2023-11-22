@@ -23,6 +23,8 @@ class textEditor
 
 	// Delimeters
 	vector<char> delimeters{ ' ', ',', '.', '?', '!', '/', ';',':'};
+	vector<char> delimeters2{',', '.', '?', '!', '/', ';',':' };
+    
 
 	struct textState
 	{
@@ -1183,59 +1185,37 @@ public:
 	}
 	
 	//replace from cursor end
-	int findSentence2(string findSentence) {
+	position findSentence(string findSentence) {
+		position ans{ -1,-1 };
 		int row = 0;
 		for (auto line : dummyParagraph) {
 			string sentence;
+			int col = 0;
+			int startCol = 0;
 			for (auto word : line) {
+				if (std::ranges::find(delimeters2, word[0]) != delimeters2.end()) {
+					sentence.clear();
+					startCol = col;
+					col = 0;
+				}
 				sentence += word;
-				sentence += " ";
-			}
-			if (!sentence.empty()) {
-				sentence.pop_back();
-			}
+				if (std::ranges::find(delimeters, sentence[0]) != delimeters.end()) {
+					sentence = sentence.substr(1);
+				}
+				
+				if (sentence == findSentence) {
+					ans.ri = row;
+					ans.ci = startCol;
+					return ans;
+				}
 
-			if (sentence == findSentence) {
-				return row;
+				col += word.size(); 
 			}
 			row++;
 		}
-		return -1;
+		return ans;
 	}
-	iteratorPosition findSentence(const string& findSentence, const position& cursor)
-	{
-		iteratorPosition pos{};
-		pos.ri = -1;
-		pos.ci = -1;
 
-		bool isFound = false;
-		auto lineItr = dummyParagraph.begin();
-		advance(lineItr, cursor.ri);
-
-		int rowIter = 0;
-		for (; lineItr != dummyParagraph.end(); ++lineItr){
-			int colIter = 0;
-			for (auto itr = lineItr->begin(); itr != lineItr->end(); ++itr){
-				string sentence;
-				for (const auto& word : *lineItr){
-					sentence += word;
-				}
-				if (sentence == findSentence){
-					pos.colIter = itr;
-					pos.ri = rowIter;
-					pos.ci = colIter;
-					return pos;
-				}
-
-				colIter += itr->size() + 1; 
-			}
-			colIter = 0;
-			rowIter++;
-			pos.ri++; 
-		}
-
-		return pos;
-	}
 	position findSubword2(string subword) {
 		position ans{ -1,-1 };
 		int row = 0;
@@ -1451,6 +1431,15 @@ public:
 				cout << subWord[startItr];
 				startItr++;
 			}
+		}
+		SetClr(15, 0);
+	}
+	void printFindSentence(const position & startPos,const string sentence) {
+		int startItr = 0;
+		SetClr(5, 15);
+		gotoRowCol(startPos.ri, startPos.ci + 1);
+		for (int ri = 0; ri < sentence.size(); ri++) {
+			cout << sentence[ri];
 		}
 		SetClr(15, 0);
 	}
@@ -1860,9 +1849,9 @@ public:
 				advance(dummyLineNumberV2, pRow);
 				printProcessing();
 			}
-			else if (currButtonPressed == 115)// S find sentence
-			{
-				string sentence;
+			else if (currButtonPressed == 1151)// S find sentence // its asc == 115 at the bottom
+			{ 
+				/*string sentence;
 				gotoRowCol(79, 0);
 				cout << "Enter sentence to find:" << endl;
 				getline(cin, sentence);
@@ -1885,8 +1874,8 @@ public:
 						cout << *colIter;
 						++colIter;
 					}
-					SetClr(15, 0);
-				}
+					SetClr(15, 0);*/
+				/*}
 				else {
 					gotoRowCol(80, 0);
 					cout << "No Such word was found before cursor. Press any key to continue" << endl;
@@ -1895,7 +1884,7 @@ public:
 				}
 				
 				processingCleanPrompt(80);
-				processingCleanPrompt(81);
+				processingCleanPrompt(81);*/
 			}
 			else if (currButtonPressed == 19)// CTRL+S find SUBSTRING
 			{
@@ -2018,6 +2007,25 @@ public:
 				_getch();
 				processingCleanPrompt(80);
 				processingCleanPrompt(81);
+			}
+			else if (currButtonPressed == 86) { // SHIFt + v find Sentence
+				string sentence;
+				gotoRowCol(78, 0);
+				cout << "Enter the Sentence : ";
+				getline(cin, sentence);
+				gotoRowCol(80, 0);
+				position st = findSentence(sentence);
+				if (st.ri != -1 && st.ci != -1) {
+					printFindSentence(st, sentence);
+				}
+				else {
+					gotoRowCol(79, 0);
+					cout << "Sentence Not Found...." << endl;
+					_getch();
+				}
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
+
 			}
 			
 			gotoRowCol(pRow, pCol);
