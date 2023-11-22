@@ -1241,7 +1241,7 @@ public:
 		for (int ri = 0; ri < sentence.size(); ri++) {
 			cout << sentence[ri];
 		}
-		SetClr(15, 0);
+		SetClr(0, 15);
 	}
 
 	int averageWordlenght() {
