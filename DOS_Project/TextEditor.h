@@ -2068,22 +2068,21 @@ public:
 			}
 			else if (currButtonPressed == 86) { // SHIFt + v find Sentence
 				string sentence;
-				gotoRowCol(78, 0);
-				cout << "Enter the Sentence : ";
-				getline(cin, sentence);
 				gotoRowCol(80, 0);
+				cout << "Enter the Sentence : " << endl;;
+				getline(cin, sentence);
+				processingCleanPrompt(80);
+				processingCleanPrompt(81);
 				position st = findSentence(sentence);
 				if (st.ri != -1 && st.ci != -1) {
 					printFindSentence(st, sentence);
 				}
 				else {
-					gotoRowCol(79, 0);
+					gotoRowCol(80, 0);
 					cout << "Sentence Not Found...." << endl;
 					_getch();
+					processingCleanPrompt(80);
 				}
-				processingCleanPrompt(80);
-				processingCleanPrompt(81);
-
 				}
 
 
