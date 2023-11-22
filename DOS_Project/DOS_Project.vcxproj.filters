@@ -36,5 +36,8 @@
     <Text Include="SHORTCUTS.txt">
       <Filter>Source Files</Filter>
     </Text>
+    <Text Include="fileMergeHelper.txt">
+      <Filter>Source Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
