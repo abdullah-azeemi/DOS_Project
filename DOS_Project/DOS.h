@@ -184,11 +184,23 @@ class DOS {
 		getline(inputFile, newFile->txtName); // for file Name
 		getline(inputFile, newFile->creationTime);
 		getline(inputFile, newFile->extension); // for file Extensions
+		inputFile >> newFile->isHighPriority;
+		inputFile >> newFile->isProtected;
+		getline(inputFile, newFile->password);
+		if (newFile->password == "%") { // if the password matches the deafult case, we will assume that there is no password
+			newFile->password.clear();
+		}
 
+		ifstream rdr(newFile->getName());
 		string line;
-		while (getline(inputFile, line)) {     // for each file conetnt line
+		while (rdr) {
+			getline(rdr, line);
 			newFile->content.push_back(line);
 		}
+		
+		//while (getline(inputFile, line)) {     // for each file conetnt line
+		//	newFile->content.push_back(line);
+		//}
 		return newFile;
 	}
 	void saveDirectory(ofstream& wrt, dir* currentDir) {
@@ -207,9 +219,13 @@ class DOS {
 		wrt << currentFile->txtName << endl;
 		wrt << currentFile->creationTime << endl;
 		wrt << currentFile->extension << endl;
-		for (const string& line : currentFile->content) {
+		wrt << currentFile->isHighPriority << endl;
+		wrt << currentFile->isProtected << endl;
+		wrt << (!currentFile->password.empty() ? currentFile->password : "%") << endl;
+
+		/*for (const string& line : currentFile->content) {
 			wrt << line << endl;
-		}
+		}*/
 	}
 	void deleteDirectory(dir* targetDir) {
 		for (dir* subDir : targetDir->childern) {
@@ -729,11 +745,11 @@ public:
 		
 		if (fileIter != curr->files.end()) {
 			
-			if (_password.size()  == 0) {
+			if (_password.size()  == 0 && (*fileIter)->isProtected) {
 				cout << "Password Required ....... " << endl;
 				return;
 			}
-			else if ((*fileIter)->getPassword() != _password) {
+			else if ((*fileIter)->getPassword() != _password && (*fileIter)->isProtected) {
 				cout << "Invalid Password ...... " << endl;
 				return;
 			}
