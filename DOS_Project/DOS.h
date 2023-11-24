@@ -783,7 +783,6 @@ public:
 		}
 	}
 
-
 	// Command : MOVE
 	void move(string fName, string destinationDirectory) {
 		auto fileIter = find_if(curr->files.begin(), curr->files.end(),

@@ -24,6 +24,7 @@ class textEditor
 	// Delimeters
 	vector<char> delimeters{ ' ', ',', '.', '?', '!', '/', ';',':'};
 	vector<char> delimeters2{',', '.', '?', '!', '/', ';',':' };
+	string fileSavePath = R"(C:\Users\HP\source\repos\DOS_Project\DOS_Project\All Text Files)";
 
 	struct textState
 	{
@@ -136,7 +137,7 @@ class textEditor
 		redo.clear();
 	}
 
-	void saveFileExit(string fileName)
+	void saveFileExit1(string fileName)
 	{
 		//erase from opened files
 		//auto itr = find(openedFiles.begin(), openedFiles.end(), fileName);
@@ -153,6 +154,23 @@ class textEditor
 			writeBack << endl;
 		}
 		this->deleteParagraph();
+	}
+	void saveFileExit(string fileName) {
+		fileName += ".txt";
+		ofstream writeBack(fileSavePath + "\\" + fileName);
+		if (writeBack.is_open()) {
+			for (auto rItr = paragraph.begin(); rItr != paragraph.end(); rItr++) {
+				for (auto cItr = (*rItr).begin(); cItr != (*rItr).end(); cItr++) {
+					writeBack << (*cItr);
+				}
+				writeBack << endl;
+			}
+			writeBack.close();  
+			this->deleteParagraph();
+		}
+		else {
+			cout << "Error: Unable to open the file for writing." << endl;
+		}
 	}
 	void loadFile(string fileName,bool isEncoded)
 	{
